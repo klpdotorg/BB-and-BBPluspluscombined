@@ -119,6 +119,21 @@ export interface FirebasePlugin {
     setAnalyticsCollectionEnabled(
         setEnabled: boolean
     ): void
+    AnalyticsConsentMode: {
+        ANALYTICS_STORAGE: string,
+        AD_STORAGE: string,
+        AD_USER_DATA: string,
+        AD_PERSONALIZATION: string
+    }
+    AnalyticsConsentStatus: {
+        GRANTED: string,
+        DENIED: string
+    }
+    setAnalyticsConsentMode(
+        consent: object,
+        success: (info: object) => void,
+        error: (err: string) => void
+    ): void
     logEvent(
         eventName: string,
         eventProperties: object
@@ -132,6 +147,11 @@ export interface FirebasePlugin {
     setUserProperty(
         userName: string,
         userValue: string
+    ): void
+    initiateOnDeviceConversionMeasurement(
+        userIdentifier: { emailAddress?:string, phoneNumber?: string },
+        success?: () => void,
+        error?: (err: string) => void
     ): void
     setCrashlyticsCollectionEnabled(): void
     didCrashOnPreviousExecution(
@@ -158,11 +178,55 @@ export interface FirebasePlugin {
         error?: (err: string) => void
     ): void
     verifyPhoneNumber(
-        success: (value: object) => void,
+        success: (value: object | boolean) => void,
         error: (err: string) => void,
         phoneNumber: string,
-        timeOutDuration: number,
-        fakeVerificationCode?: string
+        opts?: {
+            timeOutDuration: number,
+            fakeVerificationCode: string,
+            requireSmsValidation: boolean
+        },
+    ): void
+    enrollSecondAuthFactor(
+        success: (value: object | boolean) => void,
+        error: (err: string) => void,
+        phoneNumber: string,
+        opts?: {
+            displayName: string,
+            credential: {
+                verificationId: string,
+                code: string
+            },
+            timeOutDuration: number,
+            fakeVerificationCode: string,
+            requireSmsValidation: boolean
+        },
+    ): void
+    verifySecondAuthFactor(
+        success: (value: object | boolean) => void,
+        error: (err: string) => void,
+        params: {
+            selectedIndex?: number,
+            credential?: {
+                verificationId: string,
+                code: string
+            },
+        },
+        opts?: {
+            timeOutDuration: number,
+            fakeVerificationCode: string,
+            phoneNumber: string,
+            requireSmsValidation: boolean
+        },
+    ): void
+    unenrollSecondAuthFactor(
+        success: () => void,
+        error: (err: string) => void,
+        selectedIndex: number
+    ): void
+    listEnrolledSecondAuthFactors(
+        success: (secondFactors: [object]) => void,
+        error: (err: string) => void
     ): void
     setLanguageCode(
         lang: string,
@@ -198,13 +262,30 @@ export interface FirebasePlugin {
     ): void
     authenticateUserWithGoogle(
         clientId: string,
-        success?: () => void,
+        success?: (credential:object) => void,
         error?: (err: string) => void
     ): void
     authenticateUserWithApple(
-        success?: () => void,
+        success?: (credential:object) => void,
         error?: (err: string) => void,
         locale?: string,
+    ): void
+    authenticateUserWithMicrosoft(
+        success?: (credential:object) => void,
+        error?: (err: string) => void,
+        locale?: string,
+    ): void
+    authenticateUserWithFacebook(
+        accessToken: string,
+        success?: (credential:object) => void,
+        error?: (err: string) => void,
+    ): void
+    authenticateUserWithOAuth(
+        success: (credential:object) => void,
+        error: (err: string) => void,
+        providerId: string,
+        customParameters?: object,
+        scopes?: [string],
     ): void
     signInWithCredential(
         credential: object,
@@ -218,6 +299,11 @@ export interface FirebasePlugin {
     ): void
     reauthenticateWithCredential(
         credential: object,
+        success?: () => void,
+        error?: (err: string) => void
+    ): void
+    unlinkUserWithProvider(
+        providerId: string,
         success?: () => void,
         error?: (err: string) => void
     ): void
@@ -246,6 +332,11 @@ export interface FirebasePlugin {
         error?: (err: string) => void
     ): void
     updateUserEmail(
+        email: string,
+        success?: () => void,
+        error?: (err: string) => void
+    ): void
+    verifyBeforeUpdateEmail(
         email: string,
         success?: () => void,
         error?: (err: string) => void
@@ -280,10 +371,17 @@ export interface FirebasePlugin {
     registerAuthStateChangeListener(
         fn: (userSignedIn: boolean) => void,
     ): void
+    registerAuthIdTokenChangeListener(
+        fn: (result: undefined|{idToken: string, providerId: string}) => void,
+    ): void
     useAuthEmulator(
         host: string,
         port: number,
         success?: () => void,
+        error?: (err: string) => void
+    ): void
+    getClaims(
+        success: (claims: object) => void,
         error?: (err: string) => void
     ): void
     fetch(
@@ -350,6 +448,7 @@ export interface FirebasePlugin {
     addDocumentToFirestoreCollection(
         document: object,
         collection: string,
+        timestamp: boolean,
         success: () => void,
         error: (err: string) => void
     ): void
@@ -357,6 +456,7 @@ export interface FirebasePlugin {
         documentId: string,
         document: object,
         collection: string,
+        timestamp: boolean,
         success: () => void,
         error: (err: string) => void
     ): void
@@ -364,6 +464,7 @@ export interface FirebasePlugin {
         documentId: string,
         document: object,
         collection: string,
+        timestamp: boolean,
         success: () => void,
         error: (err: string) => void
     ): void
@@ -403,6 +504,12 @@ export interface FirebasePlugin {
         success: () => void,
         error: (err: string) => void,
         listenerId: string
+    ): void
+    registerApplicationDidBecomeActiveListener(
+        fn: () => void,
+    ): void
+    registerApplicationDidEnterBackgroundListener(
+        fn: () => void,
     ): void
 }
 

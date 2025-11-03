@@ -8,6 +8,7 @@
 @import FirebaseAnalytics;
 @import FirebaseRemoteConfig;
 @import FirebasePerformance;
+@import FirebaseCore;
 @import FirebaseAuth;
 @import FirebaseFunctions;
 @import UserNotifications;
@@ -24,15 +25,25 @@
 @synthesize notificationStack;
 
 static NSString*const LOG_TAG = @"FirebasePlugin[native]";
-static NSInteger const kNotificationStackSize = 10;
+static NSInteger const kNotificationStackSize = 32;
 static NSString*const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRASHLYTICS_COLLECTION_ENABLED"; //preference
 static NSString*const FirebaseCrashlyticsCollectionEnabled = @"FirebaseCrashlyticsCollectionEnabled"; //plist
 static NSString*const FIREBASE_ANALYTICS_COLLECTION_ENABLED = @"FIREBASE_ANALYTICS_COLLECTION_ENABLED";
 static NSString*const FIREBASE_PERFORMANCE_COLLECTION_ENABLED = @"FIREBASE_PERFORMANCE_COLLECTION_ENABLED";
 
+static NSString*const GOOGLE_ANALYTICS_ADID_COLLECTION_ENABLED = @"GOOGLE_ANALYTICS_ADID_COLLECTION_ENABLED";
+static NSString*const GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE = @"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE";
+static NSString*const GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE = @"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE";
+static NSString*const GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA = @"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA";
+static NSString*const GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS = @"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS";
+
+static NSString*const FIREBASEX_IOS_FCM_ENABLED = @"FIREBASEX_IOS_FCM_ENABLED";
+
 static FirebasePlugin* firebasePlugin;
+static BOOL pluginInitialized = NO;
 static BOOL registeredForRemoteNotifications = NO;
 static BOOL openSettingsEmitted = NO;
+static BOOL immediateMessagePayloadDelivery = NO;
 static NSMutableDictionary* authCredentials;
 static NSString* currentNonce; // used for Apple Sign In
 static FIRFirestore* firestore;
@@ -41,6 +52,9 @@ static NSDictionary* googlePlist;
 static NSMutableDictionary* firestoreListeners;
 static NSString* currentInstallationId;
 static NSMutableDictionary* traces;
+static FIRMultiFactorResolver* multiFactorResolver;
+static FIROAuthProvider* oauthProvider;
+static NSMutableArray* pendingGlobalJS = nil;
 
 
 + (FirebasePlugin*) firebasePlugin {
@@ -69,12 +83,9 @@ static NSMutableDictionary* traces;
     @try {
         preferences = [NSUserDefaults standardUserDefaults];
         googlePlist = [NSMutableDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"]];
+        immediateMessagePayloadDelivery = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"FIREBASE_MESSAGING_IMMEDIATE_PAYLOAD_DELIVERY"] boolValue];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationLaunchedWithUrl:) name:CDVPluginHandleOpenURLNotification object:nil];
-        
-        if([self getGooglePlistFlagWithDefaultValue:FirebaseCrashlyticsCollectionEnabled defaultValue:YES]){
-            [self setPreferenceFlag:FIREBASE_CRASHLYTICS_COLLECTION_ENABLED flag:YES];
-        }
 
         if([self getGooglePlistFlagWithDefaultValue:FIREBASE_ANALYTICS_COLLECTION_ENABLED defaultValue:YES]){
             [self setPreferenceFlag:FIREBASE_ANALYTICS_COLLECTION_ENABLED flag:YES];
@@ -84,25 +95,77 @@ static NSMutableDictionary* traces;
             [self setPreferenceFlag:FIREBASE_PERFORMANCE_COLLECTION_ENABLED flag:YES];
         }
 
+        if([self getGooglePlistFlagWithDefaultValue:FirebaseCrashlyticsCollectionEnabled defaultValue:YES]){
+            [self setPreferenceFlag:FIREBASE_CRASHLYTICS_COLLECTION_ENABLED flag:YES];
+        }
+
+        if([self getGooglePlistFlagWithDefaultValue:GOOGLE_ANALYTICS_ADID_COLLECTION_ENABLED defaultValue:YES]){
+            [self setPreferenceFlag:GOOGLE_ANALYTICS_ADID_COLLECTION_ENABLED flag:YES];
+        }
+
+        if([self getGooglePlistFlagWithDefaultValue:GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE defaultValue:YES]){
+            [self setPreferenceFlag:GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE flag:YES];
+        }
+
+        if([self getGooglePlistFlagWithDefaultValue:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE defaultValue:YES]){
+            [self setPreferenceFlag:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE flag:YES];
+        }
+
+        if([self getGooglePlistFlagWithDefaultValue:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA defaultValue:YES]){
+            [self setPreferenceFlag:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA flag:YES];
+        }
+
+        if([self getGooglePlistFlagWithDefaultValue:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS defaultValue:YES]){
+            [self setPreferenceFlag:GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS flag:YES];
+        }
+
+
+        // We don't need `setPreferenceFlag` here as we don't allow to change this at runtime.
+        _isFCMEnabled = [self getGooglePlistFlagWithDefaultValue:FIREBASEX_IOS_FCM_ENABLED defaultValue:YES];
+        if (!self.isFCMEnabled) {
+            [self _logInfo:@"Firebase Cloud Messaging is disabled, see IOS_FCM_ENABLED variable of the plugin"];
+        }
+
         // Set actionable categories if pn-actions.json exist in bundle
         [self setActionableNotifications];
 
         // Check for permission and register for remote notifications if granted
-        [self _hasPermission:^(BOOL result) {}];
-
+        if (self.isFCMEnabled) {
+            [self _hasPermission:^(BOOL result) {}];
+        }
 
         authCredentials = [[NSMutableDictionary alloc] init];
         firestoreListeners = [[NSMutableDictionary alloc] init];
         traces = [[NSMutableDictionary alloc] init];
+
+        pluginInitialized = YES;
+        [self executePendingGlobalJavascript];
     }@catch (NSException *exception) {
         [self handlePluginExceptionWithoutContext:exception];
     }
 }
 
-
 // Dynamic actions from pn-actions.json
 - (void)setActionableNotifications {
+
     @try {
+
+        // Initialize installation ID change listener
+        __weak __auto_type weakSelf = self;
+        self.installationIDObserver = [[NSNotificationCenter defaultCenter]
+            addObserverForName: FIRInstallationIDDidChangeNotification
+            object:nil
+            queue:nil
+            usingBlock:^(NSNotification * _Nonnull notification) {
+                [weakSelf sendNewInstallationId];
+            }
+        ];
+
+        // The part related to installation ID is not specific to FCM, that's why it was moved above.
+        if (!self.isFCMEnabled) {
+            return;
+        }
+
         // Parse JSON
         NSString *path = [[NSBundle mainBundle] pathForResource:@"pn-actions" ofType:@"json"];
         NSData *data = [NSData dataWithContentsOfFile:path];
@@ -142,15 +205,6 @@ static NSMutableDictionary* traces;
         // Initialize categories
         [[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:categories];
 
-        // Initialize installation ID change listner
-        __weak __auto_type weakSelf = self;
-        self.installationIDObserver = [[NSNotificationCenter defaultCenter]
-                addObserverForName: FIRInstallationIDDidChangeNotification
-                            object:nil
-                             queue:nil
-                        usingBlock:^(NSNotification * _Nonnull notification) {
-            [weakSelf sendNewInstallationId];
-        }];
     }@catch (NSException *exception) {
         [self handlePluginExceptionWithoutContext:exception];
     }
@@ -319,6 +373,7 @@ static NSMutableDictionary* traces;
                         @try {
                             NSLog(@"requestAuthorizationWithOptions: granted=%@", granted ? @"YES" : @"NO");
                             if (error == nil && granted) {
+                                [UNUserNotificationCenter currentNotificationCenter].delegate = AppDelegate.instance;
                                 [self registerForRemoteNotifications];
                             }
                             [self handleBoolResultWithPotentialError:error command:command result:granted];
@@ -412,6 +467,7 @@ static NSMutableDictionary* traces;
 
 - (void)registerForRemoteNotifications {
     NSLog(@"registerForRemoteNotifications");
+
     if(registeredForRemoteNotifications) return;
 
     [self runOnMainThread:^{
@@ -517,17 +573,20 @@ static NSMutableDictionary* traces;
 }
 
 - (void)onMessageReceived:(CDVInvokedUrlCommand *)command {
-    @try {
-        self.notificationCallbackId = command.callbackId;
+    self.notificationCallbackId = command.callbackId;
+    [self sendPendingNotifications];
+}
 
-        if (self.notificationStack != nil && [self.notificationStack count]) {
+- (void)sendPendingNotifications {
+    if (self.notificationCallbackId != nil && self.notificationStack != nil && [self.notificationStack count]) {
+        @try {
             for (NSDictionary *userInfo in self.notificationStack) {
                 [self sendNotification:userInfo];
             }
             [self.notificationStack removeAllObjects];
+        } @catch (NSException *exception) {
+            [self handlePluginExceptionWithoutContext:exception];
         }
-    }@catch (NSException *exception) {
-        [self handlePluginExceptionWithContext:exception :command];
     }
 }
 
@@ -570,7 +629,7 @@ static NSMutableDictionary* traces;
             [self _logMessage:@"Message handled by custom receiver"];
             return;
         }
-        if (self.notificationCallbackId != nil) {
+        if (self.notificationCallbackId != nil && ([AppDelegate.instance.applicationInBackground isEqual:@(NO)] || immediateMessagePayloadDelivery )) {
             [self sendPluginDictionaryResultAndKeepCallback:userInfo command:self.commandDelegate callbackId:self.notificationCallbackId];
         } else {
             if (!self.notificationStack) {
@@ -655,6 +714,224 @@ static NSMutableDictionary* traces;
     }@catch (NSException *exception) {
         [self handlePluginExceptionWithContext:exception :command];
     }
+}
+
+- (void)enrollSecondAuthFactor:(CDVInvokedUrlCommand*)command {
+    @try {
+        if([self userNotSignedInError:command]) return;
+        FIRUser* user = [FIRAuth auth].currentUser;
+
+        NSString* phoneNumber = [command.arguments objectAtIndex:0];
+        NSDictionary* opts = [command.arguments objectAtIndex:1];
+
+        NSString* displayName = [opts objectForKey:@"displayName"];
+
+
+        NSString* verificationId = nil;
+        NSString* verificationCode = nil;
+        if([opts objectForKey:@"credential"] != nil){
+            NSDictionary* credential = [opts objectForKey:@"credential"];
+            if([credential objectForKey:@"verificationId"] != nil && [credential objectForKey:@"code"] != nil){
+                verificationId = [credential objectForKey:@"verificationId"];
+                verificationCode = [credential objectForKey:@"code"];
+            }else{
+                [self sendPluginErrorWithMessage:@"'verificationId' and/or 'code' properties not found on 'credential' object" :command];
+                return;
+            }
+        }
+
+        [user.multiFactor getSessionWithCompletion:^(FIRMultiFactorSession* _Nullable session,
+                                                      NSError* _Nullable error) {
+            @try {
+                if(error != nil) return [self sendPluginErrorWithError:error command:command];
+
+                // If credential specifying verification ID and code has been provided
+                if(verificationId != nil && verificationCode != nil){
+                    // Use them to enroll
+                    FIRPhoneAuthCredential* credential =
+                        [FIRPhoneAuthProvider.provider credentialWithVerificationID:verificationId
+                                                                    verificationCode:verificationCode];
+                    FIRMultiFactorAssertion* assertion =
+                        [FIRPhoneMultiFactorGenerator assertionWithCredential:credential];
+
+                    // Complete enrollment. This will update the underlying tokens
+                    // and trigger ID token change listener.
+                    [user.multiFactor enrollWithAssertion:assertion
+                                              displayName:displayName
+                                                completion:^(NSError* _Nullable error) {
+                        @try {
+                            if(error != nil) return [self sendPluginErrorWithError:error command:command];
+                            [self sendPluginBoolResult:true command:command callbackId:command.callbackId];
+                        }@catch (NSException *exception) {
+                            [self handlePluginExceptionWithContext:exception :command];
+                        }
+                    }];
+                }else{
+                    // Send SMS verification code.
+                    [FIRPhoneAuthProvider.provider
+                      verifyPhoneNumber:phoneNumber
+                      UIDelegate:nil
+                      multiFactorSession:session
+                      completion:^(NSString* _Nullable verificationID, NSError* _Nullable error) {
+                        @try {
+                            if(error != nil) return [self sendPluginErrorWithError:error command:command];
+
+                            NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+                            [result setValue:verificationID forKey:@"verificationId"];
+                            [self sendPluginDictionaryResult:result command:command callbackId:command.callbackId];
+                        }@catch (NSException *exception) {
+                            [self handlePluginExceptionWithContext:exception :command];
+                        }
+                    }];
+                }
+            }@catch (NSException *exception) {
+                [self handlePluginExceptionWithContext:exception :command];
+            }
+        }];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+- (void)verifySecondAuthFactor:(CDVInvokedUrlCommand*)command {
+    @try {
+        if(multiFactorResolver == nil){
+            [self sendPluginErrorWithMessage:@"No multi-factor challenge exists to resolve" :command];
+            return;
+        }
+
+        NSDictionary* params = [command.arguments objectAtIndex:0];
+
+        int selectedIndex = -1;
+        if([params objectForKey:@"selectedIndex"] != nil){
+            selectedIndex = [[params objectForKey:@"selectedIndex"] intValue];
+            if(selectedIndex < 0){
+                [self sendPluginErrorWithMessage:[NSString stringWithFormat:@"Selected index value (%d) must be a positive integer", selectedIndex]:command];
+                return;
+            }
+            if(selectedIndex+1 > multiFactorResolver.hints.count){
+                [self sendPluginErrorWithMessage:[NSString stringWithFormat:@"Selected index value (%d) exceeds the number of enrolled factors (%d)", selectedIndex, (int)multiFactorResolver.hints.count]:command];
+                return;
+            }
+        }
+
+        NSString* verificationId = nil;
+        NSString* verificationCode = nil;
+        if([params objectForKey:@"credential"] != nil){
+            NSDictionary* credential = [params objectForKey:@"credential"];
+            if([credential objectForKey:@"verificationId"] != nil && [credential objectForKey:@"code"] != nil){
+                verificationId = [credential objectForKey:@"verificationId"];
+                verificationCode = [credential objectForKey:@"code"];
+            }else{
+                [self sendPluginErrorWithMessage:@"'verificationId' and/or 'code' properties not found on 'credential' object" :command];
+                return;
+            }
+        }
+
+        if(selectedIndex == -1 && verificationId == nil){
+            [self sendPluginErrorWithMessage:@"Neither 'selectedIndex' or 'credential' properties found on 'params' object - either one must be specified" :command];
+            return;
+        }
+
+        // Arguments contain ID & code from manual SMS verification, so use this for verification
+        if(verificationId != nil && verificationCode != nil){
+            FIRPhoneAuthCredential* credential =
+                [FIRPhoneAuthProvider.provider credentialWithVerificationID:verificationId
+                                                            verificationCode:verificationCode];
+            FIRMultiFactorAssertion* assertion =
+                [FIRPhoneMultiFactorGenerator assertionWithCredential:credential];
+
+            [multiFactorResolver resolveSignInWithAssertion:assertion completion:^(FIRAuthDataResult * _Nullable authResult, NSError * _Nullable error) {
+                @try {
+                    [self handleAuthResult:authResult error:error command:command];
+                }@catch (NSException *exception) {
+                    [self handlePluginExceptionWithContext:exception :command];
+                }
+            }];
+        }else{
+            // Send SMS verification code.
+            FIRPhoneMultiFactorInfo* hint = (FIRPhoneMultiFactorInfo*) multiFactorResolver.hints[selectedIndex];
+
+            [FIRPhoneAuthProvider.provider
+             verifyPhoneNumberWithMultiFactorInfo:hint
+             UIDelegate:nil
+             multiFactorSession:multiFactorResolver.session
+             completion:^(NSString * _Nullable verificationID, NSError * _Nullable error) {
+                @try {
+                    if(error != nil) return [self sendPluginErrorWithError:error command:command];
+
+                    NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+                    [result setValue:verificationID forKey:@"verificationId"];
+                    [self sendPluginDictionaryResult:result command:command callbackId:command.callbackId];
+                }@catch (NSException *exception) {
+                    [self handlePluginExceptionWithContext:exception :command];
+                }
+            }];
+        }
+
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+- (void)listEnrolledSecondAuthFactors:(CDVInvokedUrlCommand*)command{
+    @try {
+        if([self userNotSignedInError:command]) return;
+        FIRUser* user = [FIRAuth auth].currentUser;
+        NSMutableArray* secondFactors = [self parseEnrolledSecondFactorsToJson:[[user multiFactor] enrolledFactors]];
+        [self sendPluginArrayResult:secondFactors command:command callbackId:command.callbackId];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+- (void)unenrollSecondAuthFactor:(CDVInvokedUrlCommand*)command{
+    @try {
+        if([self userNotSignedInError:command]) return;
+        FIRUser* user = [FIRAuth auth].currentUser;
+
+        int selectedIndex = [[command.arguments objectAtIndex:0] intValue];
+        if(selectedIndex < 0){
+            [self sendPluginErrorWithMessage:[NSString stringWithFormat:@"Selected index value (%d) must be a positive integer", selectedIndex]:command];
+            return;
+        }
+
+        NSArray* secondFactors = [[user multiFactor] enrolledFactors];
+        if(selectedIndex+1 > secondFactors.count){
+            [self sendPluginErrorWithMessage:[NSString stringWithFormat:@"Selected index value (%d) exceeds the number of enrolled factors (%d)", selectedIndex, (int)secondFactors.count]:command];
+            return;
+        }
+
+        [[user multiFactor] unenrollWithInfo:[secondFactors objectAtIndex:selectedIndex] completion:^(NSError * _Nullable error) {
+            @try {
+                [self handleEmptyResultWithPotentialError:error command:command];
+            }@catch (NSException *exception) {
+                [self handlePluginExceptionWithContext:exception :command];
+            }
+        }];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+- (NSMutableArray*) parseEnrolledSecondFactorsToJson:(NSArray*) multiFactorInfos{
+    NSMutableArray* secondFactors  = [NSMutableArray new];
+    int index = 0;
+    for (FIRMultiFactorInfo* multiFactorInfo in multiFactorInfos) {
+        NSMutableDictionary* secondFactor = [[NSMutableDictionary alloc] init];
+        [secondFactor setValue:[NSNumber numberWithInt:index] forKey:@"index"];
+        if(multiFactorInfo.displayName != nil){
+            [secondFactor setValue:multiFactorInfo.displayName forKey:@"displayName"];
+        }
+
+        FIRPhoneMultiFactorInfo* phoneMultiFactorInfo = (FIRPhoneMultiFactorInfo*) multiFactorInfo;
+        if([phoneMultiFactorInfo respondsToSelector:@selector(phoneNumber)]){
+            [secondFactor setValue:phoneMultiFactorInfo.phoneNumber forKey:@"phoneNumber"];
+        }
+        [secondFactors addObject:secondFactor];
+        index++;
+    }
+    return secondFactors;
 }
 
 - (void)setLanguageCode:(CDVInvokedUrlCommand *)command {
@@ -758,32 +1035,33 @@ static NSMutableDictionary* traces;
     @try {
         __weak __auto_type weakSelf = self;
         GIDConfiguration* googleSignInConfig = [[GIDConfiguration alloc] initWithClientID:[FIRApp defaultApp].options.clientID];
-        [GIDSignIn.sharedInstance signInWithConfiguration:googleSignInConfig presentingViewController:self.viewController callback:^(GIDGoogleUser * _Nullable user, NSError * _Nullable error) {
-          __auto_type strongSelf = weakSelf;
-          if (strongSelf == nil) { return; }
+        GIDSignIn.sharedInstance.configuration = googleSignInConfig;
+        [GIDSignIn.sharedInstance signInWithPresentingViewController:self.viewController completion:^(GIDSignInResult * _Nullable signInResult, NSError * _Nullable error) {
+            __auto_type strongSelf = weakSelf;
+            if (strongSelf == nil) { return; }
 
-            @try{
-                CDVPluginResult* pluginResult;
-                if (error == nil) {
-                    GIDAuthentication *authentication = user.authentication;
-                    FIRAuthCredential *credential =
-                    [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
-                                                   accessToken:authentication.accessToken];
+              @try{
+                  CDVPluginResult* pluginResult;
+                  if (error == nil) {
+                      GIDGoogleUser* gidUser = signInResult.user;
+                      FIRAuthCredential *credential =
+                      [FIRGoogleAuthProvider credentialWithIDToken:gidUser.idToken.tokenString
+                                                       accessToken:gidUser.accessToken.tokenString];
 
-                    NSNumber* key = [[FirebasePlugin firebasePlugin] saveAuthCredential:credential];
-                    NSString *idToken = user.authentication.idToken;
-                    NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
-                    [result setValue:@"true" forKey:@"instantVerification"];
-                    [result setValue:key forKey:@"id"];
-                    [result setValue:idToken forKey:@"idToken"];
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
-                } else {
-                  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description];
-                }
-                [[FirebasePlugin firebasePlugin].commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            }@catch (NSException *exception) {
-                [FirebasePlugin.firebasePlugin handlePluginExceptionWithoutContext:exception];
-            }
+                      NSNumber* key = [[FirebasePlugin firebasePlugin] saveAuthCredential:credential];
+                      NSString *idToken = gidUser.idToken.tokenString;
+                      NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+                      [result setValue:@"true" forKey:@"instantVerification"];
+                      [result setValue:key forKey:@"id"];
+                      [result setValue:idToken forKey:@"idToken"];
+                      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+                  } else {
+                      pluginResult = [self createAuthErrorResult:error];
+                  }
+                  [[FirebasePlugin firebasePlugin].commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+              }@catch (NSException *exception) {
+                  [FirebasePlugin.firebasePlugin handlePluginExceptionWithoutContext:exception];
+              }
         }];
 
         [self sendPluginNoResultAndKeepCallback:command callbackId:command.callbackId];
@@ -811,6 +1089,82 @@ static NSMutableDictionary* traces;
     }
 }
 
+- (void)authenticateUserWithMicrosoft:(CDVInvokedUrlCommand*)command{
+    @try {
+        NSString* providerId = @"microsoft.com";
+        NSMutableDictionary* customParameters = [[NSMutableDictionary alloc] init];
+        [customParameters setValue:@"consent" forKey:@"prompt"];
+
+        NSString* locale = [command.arguments objectAtIndex:0];
+        if(locale != nil){
+            [customParameters setValue:locale forKey:@"locale"];
+        }
+
+        [self authenticateWithOAuth:command providerId:providerId customParameters:customParameters scopes:nil];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+- (void)authenticateUserWithOAuth:(CDVInvokedUrlCommand*)command{
+    @try {
+        NSString* providerId = [command.arguments objectAtIndex:0];
+        NSDictionary* customParameters = [command.arguments objectAtIndex:1];
+        NSArray* scopes = [command.arguments objectAtIndex:2];
+
+        [self authenticateWithOAuth:command providerId:providerId customParameters:customParameters scopes:scopes];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
+-(void)authenticateWithOAuth:(CDVInvokedUrlCommand*)command providerId:(NSString*)providerId customParameters:(NSDictionary*)customParameters scopes:(NSArray*)scopes {
+    oauthProvider = [FIROAuthProvider providerWithProviderID:providerId];
+
+    if(customParameters != nil){
+        for(id key in customParameters){
+            id value = [customParameters objectForKey:key];
+            [oauthProvider setCustomParameters:@{key: value}];
+        }
+    }
+
+    if(scopes != nil){
+        [oauthProvider setScopes:scopes];
+    }
+
+
+    [oauthProvider getCredentialWithUIDelegate:nil
+                        completion:^(FIRAuthCredential *_Nullable credential, NSError *_Nullable error) {
+
+        CDVPluginResult* pluginResult;
+        if (error) {
+            pluginResult = [self createAuthErrorResult:error];
+        } else if (credential) {
+            NSNumber* key = [self saveAuthCredential:credential];
+            NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+            [result setValue:@"true" forKey:@"instantVerification"];
+            [result setValue:key forKey:@"id"];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+        }
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)authenticateUserWithFacebook:(CDVInvokedUrlCommand*)command{
+    @try {
+        NSString* accessToken = [command.arguments objectAtIndex:0];
+        FIRAuthCredential* credential = [FIRFacebookAuthProvider credentialWithAccessToken:accessToken];
+        NSNumber* key = [self saveAuthCredential:credential];
+        NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+        [result setValue:@"true" forKey:@"instantVerification"];
+        [result setValue:key forKey:@"id"];
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
 - (void)signInWithCredential:(CDVInvokedUrlCommand*)command {
     @try {
         FIRAuthCredential* credential = [self obtainAuthCredential:[command.arguments objectAtIndex:0] command:command];
@@ -828,11 +1182,8 @@ static NSMutableDictionary* traces;
 
 - (void)reauthenticateWithCredential:(CDVInvokedUrlCommand*)command{
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
 
         FIRAuthCredential* credential = [self obtainAuthCredential:[command.arguments objectAtIndex:0] command:command];
         if(credential == nil) return;
@@ -861,9 +1212,25 @@ static NSMutableDictionary* traces;
     }
 }
 
+- (void)unlinkUserWithProvider:(CDVInvokedUrlCommand*)command {
+    @try {
+        if([self userNotSignedInError:command]) return;
+        FIRUser* user = [FIRAuth auth].currentUser;
+
+        NSString* providerId = [command.arguments objectAtIndex:0];
+
+        [user unlinkFromProvider:providerId
+                                            completion:^(FIRUser *_Nullable user, NSError *_Nullable error) {
+            [self handleEmptyResultWithPotentialError:error command:command];
+        }];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
 - (void)isUserSignedIn:(CDVInvokedUrlCommand*)command {
     @try {
-        bool isSignedIn = [FIRAuth auth].currentUser ? true : false;
+        bool isSignedIn = [self isSignedIn];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isSignedIn] callbackId:command.callbackId];
 
     }@catch (NSException *exception) {
@@ -873,16 +1240,12 @@ static NSMutableDictionary* traces;
 
 - (void)signOutUser:(CDVInvokedUrlCommand*)command {
     @try {
-        bool isSignedIn = [FIRAuth auth].currentUser ? true : false;
-        if(!isSignedIn){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
+        if([self userNotSignedInError:command]) return;
 
         // If signed in with Google
         if([GIDSignIn.sharedInstance currentUser] != nil){
             // Sign out of Google
-            [GIDSignIn.sharedInstance disconnectWithCallback:^(NSError * _Nullable error) {
+            [GIDSignIn.sharedInstance disconnectWithCompletion:^(NSError * _Nullable error) {
                 if (error) {
                     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Error signing out of Google: %@", error]] callbackId:command.callbackId];
                 }
@@ -910,11 +1273,7 @@ static NSMutableDictionary* traces;
 - (void)getCurrentUser:(CDVInvokedUrlCommand *)command {
 
     @try {
-        FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
+        if([self userNotSignedInError:command]) return;
         [self extractAndReturnUserInfo:command];
 
     }@catch (NSException *exception) {
@@ -925,11 +1284,8 @@ static NSMutableDictionary* traces;
 - (void)reloadCurrentUser:(CDVInvokedUrlCommand *)command {
 
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
         [user reloadWithCompletion:^(NSError * _Nullable error) {
             if (error != nil) {
                 [self handleEmptyResultWithPotentialError:error command:command];
@@ -952,6 +1308,25 @@ static NSMutableDictionary* traces;
     [userInfo setValue:user.photoURL ? user.photoURL.absoluteString : nil forKey:@"photoUrl"];
     [userInfo setValue:user.uid forKey:@"uid"];
     [userInfo setValue:@(user.isAnonymous ? true : false) forKey:@"isAnonymous"];
+
+    FIRUserMetadata* metadata = user.metadata;
+    userInfo[@"creationTimestamp"] = [self getTimestampFromDate:metadata.creationDate];
+    userInfo[@"lastSignInTimestamp"] = [self getTimestampFromDate:metadata.lastSignInDate];
+
+    NSMutableArray* providerData = [[NSMutableArray alloc] init];
+    for (id<FIRUserInfo> userInfo in user.providerData) {
+        // Create a dictionary, add the providerData properties to it and add it to the array
+        NSMutableDictionary *providerDataDict = [[NSMutableDictionary alloc] init];
+        providerDataDict[@"providerId"] = userInfo.providerID;
+        providerDataDict[@"uid"] = userInfo.uid;
+        providerDataDict[@"displayName"] = userInfo.displayName;
+        providerDataDict[@"email"] = userInfo.email;
+        providerDataDict[@"phoneNumber"] = userInfo.phoneNumber;
+        providerDataDict[@"photoUrl"] = [userInfo.photoURL absoluteString];
+        [providerData addObject:providerDataDict];
+    }
+    userInfo[@"providers"] = providerData;
+
     [user getIDTokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
         if(error == nil){
             [userInfo setValue:token forKey:@"idToken"];
@@ -965,13 +1340,15 @@ static NSMutableDictionary* traces;
     }];
 }
 
+- (NSNumber*) getTimestampFromDate:(NSDate*)date {
+    if(date == nil) return nil;
+    return @([date timeIntervalSince1970] * 1000);
+}
+
 - (void)updateUserProfile:(CDVInvokedUrlCommand*)command {
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
 
         NSDictionary* profile = [command.arguments objectAtIndex:0];
 
@@ -997,11 +1374,8 @@ static NSMutableDictionary* traces;
 
 - (void)updateUserEmail:(CDVInvokedUrlCommand*)command {
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
 
         NSString* email = [command.arguments objectAtIndex:0];
         [user updateEmail:email completion:^(NSError *_Nullable error) {
@@ -1016,16 +1390,29 @@ static NSMutableDictionary* traces;
     }
 }
 
+- (void)verifyBeforeUpdateEmail:(CDVInvokedUrlCommand*)command{
+    @try {
+        if([self userNotSignedInError:command]) return;
+        FIRUser* user = [FIRAuth auth].currentUser;
+        NSString* email = [command.arguments objectAtIndex:0];
+        [user sendEmailVerificationBeforeUpdatingEmail:email completion:^(NSError * _Nullable error) {
+            @try {
+                [self handleEmptyResultWithPotentialError:error command:command];
+            }@catch (NSException *exception) {
+                [self handlePluginExceptionWithContext:exception :command];
+            }
+        }];
+    }@catch (NSException *exception) {
+        [self handlePluginExceptionWithContext:exception :command];
+    }
+}
+
 - (void)sendUserEmailVerification:(CDVInvokedUrlCommand*)command{
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
+
         NSDictionary* actionCodeSettingsParams = [command.arguments objectAtIndex:0];
-
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
-
         if(![actionCodeSettingsParams isEqual:[NSNull null]]) {
             FIRActionCodeSettings *actionCodeSettings = [[FIRActionCodeSettings alloc] init];
             if([actionCodeSettingsParams objectForKey:@"handleCodeInApp"] != nil){
@@ -1033,9 +1420,6 @@ static NSMutableDictionary* traces;
             }
             if([actionCodeSettingsParams objectForKey:@"url"] != nil){
                 actionCodeSettings.URL = [NSURL URLWithString: [actionCodeSettingsParams objectForKey:@"url"]];
-            }
-            if([actionCodeSettingsParams objectForKey:@"dynamicLinkDomain"] != nil){
-                actionCodeSettings.dynamicLinkDomain = [NSString stringWithString: [actionCodeSettingsParams objectForKey:@"dynamicLinkDomain"]];
             }
             if([actionCodeSettingsParams objectForKey:@"iosBundleId"] != nil){
                 actionCodeSettings.iOSBundleID = [NSString stringWithString: [actionCodeSettingsParams objectForKey:@"iosBundleId"]];
@@ -1073,11 +1457,8 @@ static NSMutableDictionary* traces;
 
 - (void)updateUserPassword:(CDVInvokedUrlCommand*)command{
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
 
         NSString* password = [command.arguments objectAtIndex:0];
         [user updatePassword:password completion:^(NSError *_Nullable error) {
@@ -1109,11 +1490,8 @@ static NSMutableDictionary* traces;
 
 - (void)deleteUser:(CDVInvokedUrlCommand*)command{
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
 
         [user deleteWithCompletion:^(NSError *_Nullable error) {
           @try {
@@ -1200,14 +1578,10 @@ static NSMutableDictionary* traces;
 
 - (void)getClaims:(CDVInvokedUrlCommand *)command {
     @try {
+        if([self userNotSignedInError:command]) return;
         FIRUser* user = [FIRAuth auth].currentUser;
 
-        if(!user){
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];
-            return;
-        }
-
-        [user getIDTokenResultWithCompletion:^(FIRAuthTokenResult * _Nullable tokenResult, NSError * _Nullable error) {
+        [user getIDTokenResultForcingRefresh:YES completion:^(FIRAuthTokenResult * _Nullable tokenResult, NSError * _Nullable error) {
             if(error != nil){
                 [self sendPluginErrorWithError:error command:command];
                 return;
@@ -1220,6 +1594,7 @@ static NSMutableDictionary* traces;
         [self handlePluginExceptionWithContext:exception :command];
     }
 }
+
 
 /*
  * Analytics
@@ -1249,6 +1624,52 @@ static NSMutableDictionary* traces;
             [self handlePluginExceptionWithContext:exception :command];
         }
     }];
+}
+
+- (void)setAnalyticsConsentMode:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        CDVPluginResult* pluginResult = nil;
+        NSDictionary* consentObject = [command.arguments objectAtIndex:0];
+
+        NSMutableDictionary* consentSettings = [[NSMutableDictionary alloc] init];
+
+        NSEnumerator *enumerator = [consentObject keyEnumerator];
+        id key;
+        while ((key = [enumerator nextObject])) {
+            NSString* consentType = [self consentTypeFromString:key];
+            NSString* consentStatus = [self consentStatusFromString:[consentObject objectForKey:key]];
+            [consentSettings setObject:consentStatus forKey:consentType];
+        }
+
+        [FIRAnalytics setConsent:consentSettings];
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (NSString*)consentTypeFromString:(NSString*)consentTypeString {
+    if ([consentTypeString isEqualToString:@"ANALYTICS_STORAGE"]) {
+        return FIRConsentTypeAnalyticsStorage;
+    } else if ([consentTypeString isEqualToString:@"AD_STORAGE"]) {
+        return FIRConsentTypeAdStorage;
+    } else if ([consentTypeString isEqualToString:@"AD_PERSONALIZATION"]) {
+        return FIRConsentTypeAdPersonalization;
+    } else if ([consentTypeString isEqualToString:@"AD_USER_DATA"]) {
+        return FIRConsentTypeAdUserData;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString*)consentStatusFromString:(NSString*)consentStatusString {
+    if ([consentStatusString isEqualToString:@"GRANTED"]) {
+        return FIRConsentStatusGranted;
+    } else if ([consentStatusString isEqualToString:@"DENIED"]) {
+        return FIRConsentStatusDenied;
+    } else {
+        return nil;
+    }
 }
 
 - (void)logEvent:(CDVInvokedUrlCommand *)command {
@@ -1303,6 +1724,23 @@ static NSMutableDictionary* traces;
 
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }@catch (NSException *exception) {
+            [self handlePluginExceptionWithContext:exception :command];
+        }
+    }];
+}
+
+- (void) initiateOnDeviceConversionMeasurement:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        @try {
+            NSDictionary* userIdentifier = [command.arguments objectAtIndex:0];
+            if([userIdentifier objectForKey:@"emailAddress"] != nil){
+                [FIRAnalytics initiateOnDeviceConversionMeasurementWithEmailAddress:[userIdentifier objectForKey:@"emailAddress"]];
+            }else if([userIdentifier objectForKey:@"phoneNumber"] != nil){
+                [FIRAnalytics initiateOnDeviceConversionMeasurementWithPhoneNumber:[userIdentifier objectForKey:@"phoneNumber"]];
+            }
+
+            [self sendPluginSuccess:command];
         }@catch (NSException *exception) {
             [self handlePluginExceptionWithContext:exception :command];
         }
@@ -1746,7 +2184,7 @@ static NSMutableDictionary* traces;
 
             NSMutableDictionary *document_mutable = [document mutableCopy];
 
-            if(timestamp){                
+            if(timestamp){
                 document_mutable[@"created"] = [FIRTimestamp timestampWithDate:[NSDate date]];
                 document_mutable[@"lastUpdate"] = [FIRTimestamp timestampWithDate:[NSDate date]];
             }
@@ -2327,6 +2765,17 @@ static NSMutableDictionary* traces;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
+- (void) sendPluginArrayResult:(NSArray*)result command:(CDVInvokedUrlCommand*)command callbackId:(NSString*)callbackId {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
+- (void) sendPluginArrayResultAndKeepCallback:(NSArray*)result command:(CDVInvokedUrlCommand*)command callbackId:(NSString*)callbackId {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
 - (void) sendPluginError:(CDVInvokedUrlCommand*)command{
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
 }
@@ -2384,6 +2833,31 @@ static NSMutableDictionary* traces;
 }
 
 - (void)executeGlobalJavascript: (NSString*)jsString
+{
+    if(pluginInitialized){
+        [self doExecuteGlobalJavascript:jsString];
+    }else{
+        if(pendingGlobalJS == nil){
+            pendingGlobalJS = [[NSMutableArray alloc] init];
+        }
+        [pendingGlobalJS addObject:jsString];
+    }
+}
+
+- (void) executePendingGlobalJavascript
+{
+    if(pendingGlobalJS == nil){
+        NSLog(@"%@ No pending global JS calls", LOG_TAG);
+        return;
+    }
+    NSLog(@"%@ Executing %lu pending global JS calls", LOG_TAG, (unsigned long)pendingGlobalJS.count);
+    for (NSString* jsString in pendingGlobalJS) {
+        [self doExecuteGlobalJavascript:jsString];
+    }
+    pendingGlobalJS = nil;
+}
+
+- (void)doExecuteGlobalJavascript: (NSString*)jsString
 {
     [self.commandDelegate evalJs:jsString];
 }
@@ -2468,18 +2942,73 @@ static NSMutableDictionary* traces;
 
 - (void) handleAuthResult:(FIRAuthDataResult*) authResult error:(NSError*) error command:(CDVInvokedUrlCommand*)command {
     @try {
-           CDVPluginResult* pluginResult;
+        CDVPluginResult* pluginResult;
          if (error) {
-           pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description];
+             pluginResult = [self createAuthErrorResult:error];
          }else if (authResult == nil) {
              pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"User not signed in"];
          }else{
-             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
          }
-         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
      }@catch (NSException *exception) {
          [self handlePluginExceptionWithContext:exception :command];
      }
+}
+
+
+- (CDVPluginResult*) createAuthErrorResult:(NSError*) error{
+    CDVPluginResult* pluginResult;
+    if(error.code == FIRAuthErrorCodeSecondFactorRequired){
+        // The user is a multi-factor user. Second factor challenge is required.
+        multiFactorResolver = (FIRMultiFactorResolver*) error.userInfo[FIRAuthErrorUserInfoMultiFactorResolverKey];
+        NSMutableArray* secondFactors  = [self parseEnrolledSecondFactorsToJson:multiFactorResolver.hints];
+        NSString* errMessage = @"Second factor required";
+
+        NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+        [result setValue:errMessage forKey:@"errorMessage"];
+        [result setValue:secondFactors forKey:@"secondFactors"];
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:result];
+    }else if (error.code == FIRAuthErrorCodeCredentialAlreadyInUse){
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[error userInfo]];
+        FIROAuthCredential* updatedCredential = userInfo[FIRAuthErrorUserInfoUpdatedCredentialKey];
+        NSMutableDictionary *responseDict = [[NSMutableDictionary alloc] init];
+
+        [responseDict setValue:@(error.code) forKey:@"errorCode"];
+        [responseDict setValue:error.domain forKey:@"errorDomain"];
+        [responseDict setValue:userInfo.description forKey:@"errorDescription"];
+        if (userInfo[FIRAuthErrorUserInfoNameKey]) {
+            [responseDict setValue:userInfo[FIRAuthErrorUserInfoNameKey] forKey:FIRAuthErrorUserInfoNameKey];
+        }
+        if (userInfo[FIRAuthErrorUserInfoEmailKey]) {
+            [responseDict setValue:userInfo[FIRAuthErrorUserInfoEmailKey] forKey:FIRAuthErrorUserInfoEmailKey];
+        }
+        if (userInfo[FIRAuthErrorUserInfoNameKey]) {
+            [responseDict setValue:userInfo[FIRAuthErrorUserInfoNameKey] forKey:FIRAuthErrorUserInfoNameKey];
+        }
+
+        if (updatedCredential) {
+            NSMutableDictionary *updatedCredentialDict = [[NSMutableDictionary alloc] init];
+            if (updatedCredential.provider) {
+                [updatedCredentialDict setValue:updatedCredential.provider forKey:@"provider"];
+            }
+            if (updatedCredential.IDToken) {
+                [updatedCredentialDict setValue:updatedCredential.IDToken forKey:@"IDToken"];
+            }
+            NSNumber* key = [self saveAuthCredential:updatedCredential];
+            [updatedCredentialDict setValue:key forKey:@"id"];
+            [responseDict setValue:updatedCredentialDict forKey:@"updatedCredential"];
+        }
+
+        // TODO: Make messageAsDictionary work with error status- currently it returns undefined
+        NSString *jsonString = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:responseDict options:0 error:nil] encoding:NSUTF8StringEncoding];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:jsonString];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description];
+    }
+    return pluginResult;
 }
 
 - (NSNumber*) saveAuthCredential: (FIRAuthCredential*) authCredential {
@@ -2487,6 +3016,17 @@ static NSMutableDictionary* traces;
     NSNumber* key = [NSNumber numberWithInt:id];
     [authCredentials setObject:authCredential forKey:key];
     return key;
+}
+
+- (bool) isSignedIn {
+    return [FIRAuth auth].currentUser ? true : false;
+}
+
+- (bool) userNotSignedInError:(CDVInvokedUrlCommand *)command {
+    bool isError = ![self isSignedIn];
+    if(isError){
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No user is currently signed"] callbackId:command.callbackId];    }
+    return isError;
 }
 
 - (int) generateId {
@@ -2516,36 +3056,43 @@ static NSMutableDictionary* traces;
     if([googlePlist objectForKey:name] == nil){
         return defaultValue;
     }
-    return [[googlePlist objectForKey:name] isEqualToString:@"true"];
+    id value = [googlePlist objectForKey:name];
+    if ([value isKindOfClass:[NSNumber class]]) {
+        return [value boolValue];
+    } else {
+        // Note that `isEqualToString` would crash if the value is not a string.
+        return [value isEqual:@"true"];
+    }
 }
 
 
 # pragma mark - Stubs
 - (void)createChannel:(CDVInvokedUrlCommand *)command {
-	[self.commandDelegate runInBackground:^{
+    [self.commandDelegate runInBackground:^{
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
 - (void)setDefaultChannel:(CDVInvokedUrlCommand *)command {
-	[self.commandDelegate runInBackground:^{
+    [self.commandDelegate runInBackground:^{
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
 - (void)deleteChannel:(CDVInvokedUrlCommand *)command {
-	[self.commandDelegate runInBackground:^{
+    [self.commandDelegate runInBackground:^{
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
 - (void)listChannels:(CDVInvokedUrlCommand *)command {
-	[self.commandDelegate runInBackground:^{
+    [self.commandDelegate runInBackground:^{
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
 @end

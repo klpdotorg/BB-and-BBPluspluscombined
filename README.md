@@ -26,3 +26,37 @@ window.baseUrl = "https://abbmath.klp.org.in/BuildingBlocksAssets/";
 •	Cordova clean android
 •	Cordova build android
 
+03/11/2025
+**Fixing the Play Store App Issue:**
+The issue: "Your app does not support the 16 KB memory page sizes. Your app was built using an older NDK (Native Development Kit) or older native libraries that don’t support 16 KB page sizes."
+
+Solution:
+1. Open the app file in VS Code and open the terminal.
+2. Run the following commands:
+    - npm install -g cordova
+    - cordova platform remove android
+    - cordova platform add android@14.0.0
+3. Verify the config.xml file contains:
+    <preference name="android-targetSdkVersion" value="36" />
+4. After editing the file, run the following commands:
+    - cordova clean android
+    - cordova build android
+
+Run this command
+- cordova platform remove android
+- cordova platform add android@14.0.0
+- cordova clean android
+- cordova build android
+For generating .abb file/ release apk
+- cordova build android –release
+
+Please ensure the folder structure doesn't include spaces in the folder names, as this may cause errors.
+-	cordova plugin remove cordova-plugin-firebasex
+-	cordova plugin add cordova-plugin-firebasex@latest
+-	cordova plugin remove cordova-sqlite-storage
+-	cordova plugin add cordova-sqlite-storage@latest
+
+changed lines in the config.xml file
+  <preference name="android-minSdkVersion" value="23" />
+  <preference name="android-compileSdkVersion" value="36" />
+   <preference name="android-targetSdkVersion" value="36" />

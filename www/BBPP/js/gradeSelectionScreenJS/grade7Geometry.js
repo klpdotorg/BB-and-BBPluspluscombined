@@ -14,6 +14,25 @@ Game.grade7Geometry.prototype = {
 
 		document.addEventListener("online", _this.syncTelFunc, false);
 
+		// //Variables used for user progress
+		// _this.userHasPlayed = userHasPlayed;
+		// _this.timeInMinutes = timeInMinutes;
+		// _this.timeInSeconds = timeInSeconds;
+		// _this.score = score;
+		// _this.game_id = game_id;
+		// _this.gradeTopics = gradeTopics;
+		// _this.grade = grade;
+		// _this.microConcepts = microConcepts;
+
+		// console.log("inside geometry menu",_this.userHasPlayed,_this.timeInMinutes,_this.timeInSeconds,_this.game_id,_this.score);
+
+		// if(_this.userHasPlayed !=0 && _this.timeInMinutes != undefined && _this.timeInSeconds != undefined && _this.game_id != undefined && _this.score != 0 && _this.gradeTopics != undefined && _this.grade != undefined && _this.microConcepts != undefined)
+		// {
+		// 	var objData = {
+		// 		game_id:_this.game_id,
+		// 	}
+		// 	BBplusplusdbDetails.bbplusplusdbhandler.executeSql('SELECT totalLearingTimeinHrs AS Hrs, totalLearingTimeinMins As Mins, totalLearingTimeinSecs As Secs FROM UserProgress WHERE gameId ="'+objData.game_id+'"', [], this.localdatasuccess, this.localdatafailed);
+		// }
 	},
 
 	syncTelFunc: function () {
@@ -119,7 +138,13 @@ Game.grade7Geometry.prototype = {
 		});
 
 		_this.mc.on("swipeup", function (v) {
-			
+			//console.log(v);
+
+
+			//	if(swipeUpFlag)
+			//	{
+			//game.input.enabled = false;
+
 			_this.tween = game.add.tween(_this.graphicsBg);
 			_this.tween.to({ y: _this.graphicsBg.y - (v.distance * (v.overallVelocity * 2 / -1)) }, 0, 'Linear', true, 0);
 			_this.tween.onComplete.add(function () {
@@ -148,6 +173,9 @@ Game.grade7Geometry.prototype = {
 
 		_this.mc.on("swipedown", function (v) {
 
+			//	if(swipeDownFlag)
+			//	{
+			//game.input.enabled = false;
 			_this.tween = game.add.tween(_this.graphicsBg);
 			_this.tween.to({ y: _this.graphicsBg.y + (v.distance * (v.overallVelocity * 2)) }, 0, 'Linear', true, 0);
 			_this.tween.onComplete.add(function () {
@@ -277,6 +305,9 @@ Game.grade7Geometry.prototype = {
 		_this.topicTxtBg.boundsPadding = 0;
 
 
+		//_this.topicTitleText = _this.add.sprite(215,83,'fractionsTitleTxt');
+		//_this.topicTitleText.anchor.setTo(0.5);
+
 		_this.topicTitleText = this.add.text(185, 85, ' \n ' + window.selctedLang.shapesTitle + ' \n ');
 		_this.topicTitleText.anchor.setTo(0.5);
 		_this.topicTitleText.align = 'center';
@@ -289,352 +320,26 @@ Game.grade7Geometry.prototype = {
 
 		_this.topicTitleText.wordWrap = true;
 		_this.topicTitleText.wordWrapWidth = 500;
-		
+		//_this.topicTitleText.setTextBounds(0,0,500,500);
+		//_this.topicTitleText.padding.set(50, 50);
+
+		//_this.topicTitleText.useAdvancedWrap  = true;
+
+		//_this.topicTitleText.setShadow(0, 0, 'rgba(0, 0, 0, 0)', 0);
+
 		_this.topicBg = _this.add.graphics(75, 100);
 		_this.topicBg.lineStyle(0, 0xFFFFFF, 0.8);
 		_this.topicBg.beginFill(0x139487, 1);
 		_this.topicBg.drawRoundedRect(0, 0, 805, 600, 30);
 		_this.topicBg.boundsPadding = 0;
 
-		_this.GMS_2_Screen = _this.add.sprite(100, 120, 'GMSS_1_Screen');
-		_this.bgGraphicNum2 = this.add.graphics(210, 175);
-		_this.bgGraphicNum2.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicNum2.beginFill(0x493A19, 1);
-		_this.bgGraphicNum2.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicNum2.boundsPadding = 0;
-		_this.GMS_2_ScreenTxt = this.add.text(225, 192, ' \n ' + window.selctedLang.GMS_2_Screen + ' \n ');
-		_this.GMS_2_ScreenTxt.anchor.setTo(0.5);
-		_this.GMS_2_ScreenTxt.align = 'center';
-		_this.GMS_2_ScreenTxt.font = 'gradefont';
-		_this.GMS_2_ScreenTxt.fontSize = 20;
-		_this.GMS_2_ScreenTxt.fontWeight = 'normal';
-		_this.GMS_2_ScreenTxt.fill = 'white';
-		_this.GMS_2_ScreenTxt.wordWrap = true;
-		_this.GMS_2_ScreenTxt.wordWrapWidth = 500;
-		_this.GMS_2_Screen.inputEnabled = true;
-		_this.GMS_2_Screen.input.useHandCursor = true;
-		_this.GMS_2_Screen.name = "GMS-2";
-		_this.GMS_2_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMSS_01_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMS_3_Screen = _this.add.sprite(300, 120, 'GMSS_2_Screen');
-		_this.bgGraphicNum3 = this.add.graphics(410, 175);
-		_this.bgGraphicNum3.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicNum3.beginFill(0x493A19, 1);
-		_this.bgGraphicNum3.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicNum3.boundsPadding = 0;
-		_this.GMS_3_ScreenTxt = this.add.text(425, 192, ' \n ' + window.selctedLang.GMS_3_Screen + ' \n ');
-		_this.GMS_3_ScreenTxt.anchor.setTo(0.5);
-		_this.GMS_3_ScreenTxt.align = 'center';
-		_this.GMS_3_ScreenTxt.font = 'gradefont';
-		_this.GMS_3_ScreenTxt.fontSize = 20;
-		_this.GMS_3_ScreenTxt.fontWeight = 'normal';
-		_this.GMS_3_ScreenTxt.fill = 'white';
-		_this.GMS_3_ScreenTxt.wordWrap = true;
-		_this.GMS_3_ScreenTxt.wordWrapWidth = 500;
-		_this.GMS_3_Screen.inputEnabled = true;
-		_this.GMS_3_Screen.name = "GMS-3";
-		_this.GMS_3_Screen.input.useHandCursor = true;
-		_this.GMS_3_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMSS_02_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMS_4_Screen = _this.add.sprite(500, 120, 'GMSS_3_Screen');
-		_this.bgGraphicFr4 = this.add.graphics(610, 175);
-		_this.bgGraphicFr4.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicFr4.beginFill(0x493A19, 1);
-		_this.bgGraphicFr4.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicFr4.boundsPadding = 0;
-		_this.GMS_4_ScreenTxt = this.add.text(625, 192, ' \n ' + window.selctedLang.GMR_1_Screen + ' \n ');
-		_this.GMS_4_ScreenTxt.anchor.setTo(0.5);
-		_this.GMS_4_ScreenTxt.align = 'center';
-		_this.GMS_4_ScreenTxt.font = 'gradefont';
-		_this.GMS_4_ScreenTxt.fontSize = 20;
-		_this.GMS_4_ScreenTxt.fontWeight = 'normal';
-		_this.GMS_4_ScreenTxt.fill = 'white';
-		_this.GMS_4_ScreenTxt.wordWrap = true;
-		_this.GMS_4_ScreenTxt.wordWrapWidth = 500;
-		_this.GMS_4_Screen.inputEnabled = true;
-		_this.GMS_4_Screen.name = "GMR-4";
-		_this.GMS_4_Screen.input.useHandCursor = true;
-		_this.GMS_4_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMSS_03_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMCR_1_Screen = _this.add.sprite(700, 120, 'GMSS_4_Screen');
-		_this.bgGraphicNum5 = this.add.graphics(810, 175);
-		_this.bgGraphicNum5.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicNum5.beginFill(0x493A19, 1);
-		_this.bgGraphicNum5.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicNum5.boundsPadding = 0;
-		_this.GMCR_1_ScreenTxt = this.add.text(825, 192, ' \n ' + window.selctedLang.GMCR_1_Screen + ' \n ');
-		_this.GMCR_1_ScreenTxt.anchor.setTo(0.5);
-		_this.GMCR_1_ScreenTxt.align = 'center';
-		_this.GMCR_1_ScreenTxt.font = 'gradefont';
-		_this.GMCR_1_ScreenTxt.fontSize = 20;
-		_this.GMCR_1_ScreenTxt.fontWeight = 'normal';
-		_this.GMCR_1_ScreenTxt.fill = 'white';
-		_this.GMCR_1_ScreenTxt.wordWrap = true;
-		_this.GMCR_1_ScreenTxt.wordWrapWidth = 500;
-		_this.GMCR_1_Screen.inputEnabled = true;
-		_this.GMCR_1_Screen.input.useHandCursor = true;
-		_this.GMCR_1_Screen.name = "GMCR-1";
-		_this.GMCR_1_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMSS_04_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_1_Screen = _this.add.sprite(100, 320, 'GMLA_1_Screen');
-		_this.bgGraphicAlg7 = this.add.graphics(210, 375);
-		_this.bgGraphicAlg7.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicAlg7.beginFill(0x493A19, 1);
-		_this.bgGraphicAlg7.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicAlg7.boundsPadding = 0;
-		_this.GMLA_1_ScreenTxt = this.add.text(225, 392, ' \n ' + window.selctedLang.GMLA_1_Screen + ' \n ');
-		_this.GMLA_1_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_1_ScreenTxt.align = 'center';
-		_this.GMLA_1_ScreenTxt.font = 'gradefont';
-		_this.GMLA_1_ScreenTxt.fontSize = 20;
-		_this.GMLA_1_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_1_ScreenTxt.fill = 'white';
-		_this.GMLA_1_ScreenTxt.wordWrap = true;
-		_this.GMLA_1_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_1_Screen.inputEnabled = true;
-		_this.GMLA_1_Screen.name = "ALD-1";
-		_this.GMLA_1_Screen.input.useHandCursor = true;
-		_this.GMLA_1_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_01_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_2_Screen = _this.add.sprite(300, 320, 'GMLA_2_Screen');
-		_this.bgGraphicAlg8 = this.add.graphics(410, 375);
-		_this.bgGraphicAlg8.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicAlg8.beginFill(0x493A19, 1);
-		_this.bgGraphicAlg8.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicAlg8.boundsPadding = 0;
-		_this.GMLA_2_ScreenTxt = this.add.text(425, 392, ' \n ' + window.selctedLang.GMLA_2_Screen + ' \n ');
-		_this.GMLA_2_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_2_ScreenTxt.align = 'center';
-		_this.GMLA_2_ScreenTxt.font = 'gradefont';
-		_this.GMLA_2_ScreenTxt.fontSize = 20;
-		_this.GMLA_2_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_2_ScreenTxt.fill = 'white';
-		_this.GMLA_2_ScreenTxt.wordWrap = true;
-		_this.GMLA_2_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_2_Screen.inputEnabled = true;
-		_this.GMLA_2_Screen.input.useHandCursor = true;
-		_this.GMLA_2_Screen.name = "NSD-1";
-		_this.GMLA_2_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_02_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_3_Screen = _this.add.sprite(500, 320, 'GMLA_3_Screen');
-		_this.bgGraphicAlg9 = this.add.graphics(810, 375);
-		_this.bgGraphicAlg9.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicAlg9.beginFill(0x493A19, 1);
-		_this.bgGraphicAlg9.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicAlg9.boundsPadding = 0;
-		_this.GMLA_3_ScreenTxt = this.add.text(625, 392, ' \n ' + window.selctedLang.GMLA_3_Screen + ' \n ');
-		_this.GMLA_3_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_3_ScreenTxt.align = 'center';
-		_this.GMLA_3_ScreenTxt.font = 'gradefont';
-		_this.GMLA_3_ScreenTxt.fontSize = 20;
-		_this.GMLA_3_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_3_ScreenTxt.fill = 'white';
-		_this.GMLA_3_ScreenTxt.wordWrap = true;
-		_this.GMLA_3_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_3_Screen.inputEnabled = true;
-		_this.GMLA_3_Screen.input.useHandCursor = true;
-		_this.GMLA_3_Screen.name = "NSD-2A";
-		_this.GMLA_3_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_03_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_4_Screen = _this.add.sprite(700, 320, 'GMLA_4_Screen');
-		_this.bgGraphicAlg10 = this.add.graphics(210, 575);
-		_this.bgGraphicAlg10.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicAlg10.beginFill(0x493A19, 1);
-		_this.bgGraphicAlg10.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicAlg10.boundsPadding = 0;
-		_this.GMLA_4_ScreenTxt = this.add.text(825, 392, ' \n ' + window.selctedLang.GMLA_4_Screen + ' \n ');
-		_this.GMLA_4_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_4_ScreenTxt.align = 'center';
-		_this.GMLA_4_ScreenTxt.font = 'gradefont';
-		_this.GMLA_4_ScreenTxt.fontSize = 20;
-		_this.GMLA_4_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_4_ScreenTxt.fill = 'white';
-		_this.GMLA_4_ScreenTxt.wordWrap = true;
-		_this.GMLA_4_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_4_Screen.inputEnabled = true;
-		_this.GMLA_4_Screen.name = "NSF-2B";
-		_this.GMLA_4_Screen.input.useHandCursor = true;
-		_this.GMLA_4_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_04_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_5_Screen = _this.add.sprite(100,520,'GMLA_5_Screen');
-		_this.bgGraphicAlg11 = this.add.graphics(210,575);
-		_this.bgGraphicAlg11.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicAlg11.beginFill(0x493A19, 1);
-		_this.bgGraphicAlg11.drawRoundedRect(0,0,30,30,10);
-		_this.bgGraphicAlg11.boundsPadding = 0;
-		_this.GMLA_5_ScreenTxt = this.add.text(225, 592, ' \n '+window.selctedLang.GMLA_5_Screen+' \n ');
-		_this.GMLA_5_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_5_ScreenTxt.align = 'center';
-		_this.GMLA_5_ScreenTxt.font = 'gradefont';
-		_this.GMLA_5_ScreenTxt.fontSize = 20;
-		_this.GMLA_5_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_5_ScreenTxt.fill = 'white';
-		_this.GMLA_5_ScreenTxt.wordWrap = true;
-		_this.GMLA_5_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_5_Screen.inputEnabled = true;
-		_this.GMLA_5_Screen.name = "NSD-3A";
-		_this.GMLA_5_Screen.input.useHandCursor = true;
-		_this.GMLA_5_Screen.events.onInputDown.add(function(target){
-			_this.time.events.add(300, function(){
-				if(_this.tap)
-				{
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_05_G7',true,false);
-				}
-			},_this);
-		},_this);
-
-		_this.GMLA_6_Screen = _this.add.sprite(300,520, 'GMLA_6_Screen');
-		_this.bgGraphicInt12 = this.add.graphics(410, 575);
-		_this.bgGraphicInt12.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicInt12.beginFill(0x493A19, 1);
-		_this.bgGraphicInt12.drawRoundedRect(0, 0, 30, 30, 10);
-		_this.bgGraphicInt12.boundsPadding = 0;
-		_this.GMLA_6_ScreenTxt = this.add.text(425, 592, ' \n ' + window.selctedLang.GMLA_6_Screen + ' \n ');
-		_this.GMLA_6_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_6_ScreenTxt.align = 'center';
-		_this.GMLA_6_ScreenTxt.font = 'gradefont';
-		_this.GMLA_6_ScreenTxt.fontSize = 20;
-		_this.GMLA_6_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_6_ScreenTxt.fill = 'white';
-		_this.GMLA_6_ScreenTxt.wordWrap = true;
-		_this.GMLA_6_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_6_Screen.inputEnabled = true;
-		_this.GMLA_6_Screen.name = "INT-11";
-		_this.GMLA_6_Screen.input.useHandCursor = true;
-		_this.GMLA_6_Screen.events.onInputDown.add(function (target) {
-			_this.time.events.add(300, function () {
-				if (_this.tap) {
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_06_G7', true, false);
-				}
-			}, _this);
-		}, _this);
-
-		_this.GMLA_7_Screen = _this.add.sprite(500,520,'GMLA_7_Screen');//'GMLA_7_Screen'
-		_this.bgGraphicNum6 = this.add.graphics(610, 575);
-		_this.bgGraphicNum6.lineStyle(0, 0xFFFFFF, 0.8);
-		_this.bgGraphicNum6.beginFill(0x493A19, 1);
-		_this.bgGraphicNum6.drawRoundedRect(0,0,30,30,10);
-		_this.bgGraphicNum6.boundsPadding = 0;
-		_this.GMLA_7_ScreenTxt = this.add.text(625, 592, ' \n '+window.selctedLang.GMLA_7_Screen +' \n ');
-		_this.GMLA_7_ScreenTxt.anchor.setTo(0.5);
-		_this.GMLA_7_ScreenTxt.align = 'center';
-		_this.GMLA_7_ScreenTxt.font = 'gradefont';
-		_this.GMLA_7_ScreenTxt.fontSize = 20;
-		_this.GMLA_7_ScreenTxt.fontWeight = 'normal';
-		_this.GMLA_7_ScreenTxt.fill = 'white';
-		_this.GMLA_7_ScreenTxt.wordWrap = true;
-		_this.GMLA_7_ScreenTxt.wordWrapWidth = 500;
-		_this.GMLA_7_Screen .inputEnabled = true;
-		_this.GMLA_7_Screen .name = "GMAN-1";
-		_this.GMLA_7_Screen .input.useHandCursor = true;
-		_this.GMLA_7_Screen .events.onInputDown.add(function(target){
-			_this.time.events.add(300, function(){
-				if(_this.tap)
-				{					
-					_this.time.events.removeAll();
-					target.events.onInputDown.removeAll();
-					_this.clickSound = _this.add.audio('ClickSound');
-					_this.clickSound.play();
-					_this.state.start('preloader_GMLA_07_G7',true,false);
-				}
-			},_this);
-		},_this);
-
-		_this.GMS_1_Screen = _this.add.sprite(700, 520, 'GM_PYTH_Screen');
-		_this.bgGraphicFr1 = this.add.graphics(810, 575);
+		_this.GMS_1_Screen = _this.add.sprite(100, 120, 'GM_PYTH_Screen');//700,520
+		_this.bgGraphicFr1 = this.add.graphics(210, 175);//810,575
 		_this.bgGraphicFr1.lineStyle(0, 0xFFFFFF, 0.8);
 		_this.bgGraphicFr1.beginFill(0x493A19, 1);
 		_this.bgGraphicFr1.drawRoundedRect(0, 0, 30, 30, 10);
 		_this.bgGraphicFr1.boundsPadding = 0;
-		_this.GMS_1_ScreenTxt = this.add.text(825, 592, ' \n ' + window.selctedLang.GMS_1_Screen + ' \n ');
+		_this.GMS_1_ScreenTxt = this.add.text(225, 192, ' \n ' + window.selctedLang.GMS_1_Screen + ' \n ');//825,592
 		_this.GMS_1_ScreenTxt.anchor.setTo(0.5);
 		_this.GMS_1_ScreenTxt.align = 'center';
 		_this.GMS_1_ScreenTxt.font = 'gradefont';
@@ -658,14 +363,348 @@ Game.grade7Geometry.prototype = {
 			}, _this);
 		}, _this);
 
+		_this.GMS_2_Screen = _this.add.sprite(300, 120, 'GMSS_1_Screen');
+		_this.bgGraphicNum2 = this.add.graphics(410, 175);
+		_this.bgGraphicNum2.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicNum2.beginFill(0x493A19, 1);
+		_this.bgGraphicNum2.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicNum2.boundsPadding = 0;
+		_this.GMS_2_ScreenTxt = this.add.text(425, 192, ' \n ' + window.selctedLang.GMS_2_Screen + ' \n ');
+		_this.GMS_2_ScreenTxt.anchor.setTo(0.5);
+		_this.GMS_2_ScreenTxt.align = 'center';
+		_this.GMS_2_ScreenTxt.font = 'gradefont';
+		_this.GMS_2_ScreenTxt.fontSize = 20;
+		_this.GMS_2_ScreenTxt.fontWeight = 'normal';
+		_this.GMS_2_ScreenTxt.fill = 'white';
+		_this.GMS_2_ScreenTxt.wordWrap = true;
+		_this.GMS_2_ScreenTxt.wordWrapWidth = 500;
+		_this.GMS_2_Screen.inputEnabled = true;
+		_this.GMS_2_Screen.input.useHandCursor = true;
+		_this.GMS_2_Screen.name = "GMS-2";
+		_this.GMS_2_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMSS_01_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMS_3_Screen = _this.add.sprite(500, 120, 'GMSS_2_Screen');
+		_this.bgGraphicNum3 = this.add.graphics(610, 175);
+		_this.bgGraphicNum3.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicNum3.beginFill(0x493A19, 1);
+		_this.bgGraphicNum3.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicNum3.boundsPadding = 0;
+		_this.GMS_3_ScreenTxt = this.add.text(625, 192, ' \n ' + window.selctedLang.GMS_3_Screen + ' \n ');
+		_this.GMS_3_ScreenTxt.anchor.setTo(0.5);
+		_this.GMS_3_ScreenTxt.align = 'center';
+		_this.GMS_3_ScreenTxt.font = 'gradefont';
+		_this.GMS_3_ScreenTxt.fontSize = 20;
+		_this.GMS_3_ScreenTxt.fontWeight = 'normal';
+		_this.GMS_3_ScreenTxt.fill = 'white';
+		_this.GMS_3_ScreenTxt.wordWrap = true;
+		_this.GMS_3_ScreenTxt.wordWrapWidth = 500;
+		_this.GMS_3_Screen.inputEnabled = true;
+		_this.GMS_3_Screen.name = "GMS-3";
+		_this.GMS_3_Screen.input.useHandCursor = true;
+		_this.GMS_3_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMSS_02_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMS_4_Screen = _this.add.sprite(700, 120, 'GMSS_3_Screen');
+		_this.bgGraphicFr4 = this.add.graphics(810, 175);
+		_this.bgGraphicFr4.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicFr4.beginFill(0x493A19, 1);
+		_this.bgGraphicFr4.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicFr4.boundsPadding = 0;
+		_this.GMS_4_ScreenTxt = this.add.text(825, 192, ' \n ' + window.selctedLang.GMR_1_Screen + ' \n ');
+		_this.GMS_4_ScreenTxt.anchor.setTo(0.5);
+		_this.GMS_4_ScreenTxt.align = 'center';
+		_this.GMS_4_ScreenTxt.font = 'gradefont';
+		_this.GMS_4_ScreenTxt.fontSize = 20;
+		_this.GMS_4_ScreenTxt.fontWeight = 'normal';
+		_this.GMS_4_ScreenTxt.fill = 'white';
+		_this.GMS_4_ScreenTxt.wordWrap = true;
+		_this.GMS_4_ScreenTxt.wordWrapWidth = 500;
+		_this.GMS_4_Screen.inputEnabled = true;
+		_this.GMS_4_Screen.name = "GMR-4";
+		_this.GMS_4_Screen.input.useHandCursor = true;
+		_this.GMS_4_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMSS_03_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMCR_1_Screen = _this.add.sprite(100, 320, 'GMSS_4_Screen');
+		_this.bgGraphicNum5 = this.add.graphics(210, 375);
+		_this.bgGraphicNum5.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicNum5.beginFill(0x493A19, 1);
+		_this.bgGraphicNum5.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicNum5.boundsPadding = 0;
+		_this.GMCR_1_ScreenTxt = this.add.text(225, 392, ' \n ' + window.selctedLang.GMCR_1_Screen + ' \n ');
+		_this.GMCR_1_ScreenTxt.anchor.setTo(0.5);
+		_this.GMCR_1_ScreenTxt.align = 'center';
+		_this.GMCR_1_ScreenTxt.font = 'gradefont';
+		_this.GMCR_1_ScreenTxt.fontSize = 20;
+		_this.GMCR_1_ScreenTxt.fontWeight = 'normal';
+		_this.GMCR_1_ScreenTxt.fill = 'white';
+		_this.GMCR_1_ScreenTxt.wordWrap = true;
+		_this.GMCR_1_ScreenTxt.wordWrapWidth = 500;
+		_this.GMCR_1_Screen.inputEnabled = true;
+		_this.GMCR_1_Screen.input.useHandCursor = true;
+		_this.GMCR_1_Screen.name = "GMCR-1";
+		_this.GMCR_1_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMSS_04_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_1_Screen = _this.add.sprite(300, 320, 'GMLA_1_Screen');
+		_this.bgGraphicAlg7 = this.add.graphics(410, 375);
+		_this.bgGraphicAlg7.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicAlg7.beginFill(0x493A19, 1);
+		_this.bgGraphicAlg7.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicAlg7.boundsPadding = 0;
+		_this.GMLA_1_ScreenTxt = this.add.text(425, 392, ' \n ' + window.selctedLang.GMLA_1_Screen + ' \n ');
+		_this.GMLA_1_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_1_ScreenTxt.align = 'center';
+		_this.GMLA_1_ScreenTxt.font = 'gradefont';
+		_this.GMLA_1_ScreenTxt.fontSize = 20;
+		_this.GMLA_1_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_1_ScreenTxt.fill = 'white';
+		_this.GMLA_1_ScreenTxt.wordWrap = true;
+		_this.GMLA_1_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_1_Screen.inputEnabled = true;
+		_this.GMLA_1_Screen.name = "ALD-1";
+		_this.GMLA_1_Screen.input.useHandCursor = true;
+		_this.GMLA_1_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_01_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_2_Screen = _this.add.sprite(500, 320, 'GMLA_2_Screen');
+		_this.bgGraphicAlg8 = this.add.graphics(810, 375);
+		_this.bgGraphicAlg8.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicAlg8.beginFill(0x493A19, 1);
+		_this.bgGraphicAlg8.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicAlg8.boundsPadding = 0;
+		_this.GMLA_2_ScreenTxt = this.add.text(625, 392, ' \n ' + window.selctedLang.GMLA_2_Screen + ' \n ');
+		_this.GMLA_2_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_2_ScreenTxt.align = 'center';
+		_this.GMLA_2_ScreenTxt.font = 'gradefont';
+		_this.GMLA_2_ScreenTxt.fontSize = 20;
+		_this.GMLA_2_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_2_ScreenTxt.fill = 'white';
+		_this.GMLA_2_ScreenTxt.wordWrap = true;
+		_this.GMLA_2_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_2_Screen.inputEnabled = true;
+		_this.GMLA_2_Screen.input.useHandCursor = true;
+		_this.GMLA_2_Screen.name = "NSD-1";
+		_this.GMLA_2_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_02_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_3_Screen = _this.add.sprite(700, 320, 'GMLA_3_Screen');
+		_this.bgGraphicAlg9 = this.add.graphics(210, 575);
+		_this.bgGraphicAlg9.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicAlg9.beginFill(0x493A19, 1);
+		_this.bgGraphicAlg9.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicAlg9.boundsPadding = 0;
+		_this.GMLA_3_ScreenTxt = this.add.text(825, 392, ' \n ' + window.selctedLang.GMLA_3_Screen + ' \n ');
+		_this.GMLA_3_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_3_ScreenTxt.align = 'center';
+		_this.GMLA_3_ScreenTxt.font = 'gradefont';
+		_this.GMLA_3_ScreenTxt.fontSize = 20;
+		_this.GMLA_3_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_3_ScreenTxt.fill = 'white';
+		_this.GMLA_3_ScreenTxt.wordWrap = true;
+		_this.GMLA_3_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_3_Screen.inputEnabled = true;
+		_this.GMLA_3_Screen.input.useHandCursor = true;
+		_this.GMLA_3_Screen.name = "NSD-2A";
+		_this.GMLA_3_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_03_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_4_Screen = _this.add.sprite(100, 520, 'GMLA_4_Screen');
+		_this.bgGraphicAlg10 = this.add.graphics(210, 575);
+		_this.bgGraphicAlg10.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicAlg10.beginFill(0x493A19, 1);
+		_this.bgGraphicAlg10.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicAlg10.boundsPadding = 0;
+		_this.GMLA_4_ScreenTxt = this.add.text(225, 592, ' \n ' + window.selctedLang.GMLA_4_Screen + ' \n ');
+		_this.GMLA_4_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_4_ScreenTxt.align = 'center';
+		_this.GMLA_4_ScreenTxt.font = 'gradefont';
+		_this.GMLA_4_ScreenTxt.fontSize = 20;
+		_this.GMLA_4_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_4_ScreenTxt.fill = 'white';
+		_this.GMLA_4_ScreenTxt.wordWrap = true;
+		_this.GMLA_4_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_4_Screen.inputEnabled = true;
+		_this.GMLA_4_Screen.name = "NSF-2B";
+		_this.GMLA_4_Screen.input.useHandCursor = true;
+		_this.GMLA_4_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_04_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_5_Screen = _this.add.sprite(300, 520, 'GMLA_5_Screen');
+		_this.bgGraphicAlg11 = this.add.graphics(410, 575);
+		_this.bgGraphicAlg11.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicAlg11.beginFill(0x493A19, 1);
+		_this.bgGraphicAlg11.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicAlg11.boundsPadding = 0;
+		_this.GMLA_5_ScreenTxt = this.add.text(425, 592, ' \n ' + window.selctedLang.GMLA_5_Screen + ' \n ');
+		_this.GMLA_5_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_5_ScreenTxt.align = 'center';
+		_this.GMLA_5_ScreenTxt.font = 'gradefont';
+		_this.GMLA_5_ScreenTxt.fontSize = 20;
+		_this.GMLA_5_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_5_ScreenTxt.fill = 'white';
+		_this.GMLA_5_ScreenTxt.wordWrap = true;
+		_this.GMLA_5_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_5_Screen.inputEnabled = true;
+		_this.GMLA_5_Screen.name = "NSD-3A";
+		_this.GMLA_5_Screen.input.useHandCursor = true;
+		_this.GMLA_5_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_05_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_6_Screen = _this.add.sprite(500, 520, 'GMLA_6_Screen');
+		_this.bgGraphicInt12 = this.add.graphics(610, 575);
+		_this.bgGraphicInt12.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicInt12.beginFill(0x493A19, 1);
+		_this.bgGraphicInt12.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicInt12.boundsPadding = 0;
+		_this.GMLA_6_ScreenTxt = this.add.text(625, 592, ' \n ' + window.selctedLang.GMLA_6_Screen + ' \n ');
+		_this.GMLA_6_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_6_ScreenTxt.align = 'center';
+		_this.GMLA_6_ScreenTxt.font = 'gradefont';
+		_this.GMLA_6_ScreenTxt.fontSize = 20;
+		_this.GMLA_6_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_6_ScreenTxt.fill = 'white';
+		_this.GMLA_6_ScreenTxt.wordWrap = true;
+		_this.GMLA_6_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_6_Screen.inputEnabled = true;
+		_this.GMLA_6_Screen.name = "INT-11";
+		_this.GMLA_6_Screen.input.useHandCursor = true;
+		_this.GMLA_6_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_06_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+		_this.GMLA_7_Screen = _this.add.sprite(700, 520, 'GMLA_7_Screen');//'GMLA_7_Screen'
+		_this.bgGraphicNum6 = this.add.graphics(810, 575);
+		_this.bgGraphicNum6.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.bgGraphicNum6.beginFill(0x493A19, 1);
+		_this.bgGraphicNum6.drawRoundedRect(0, 0, 30, 30, 10);
+		_this.bgGraphicNum6.boundsPadding = 0;
+		_this.GMLA_7_ScreenTxt = this.add.text(825, 592, ' \n ' + window.selctedLang.GMLA_7_Screen + ' \n ');
+		_this.GMLA_7_ScreenTxt.anchor.setTo(0.5);
+		_this.GMLA_7_ScreenTxt.align = 'center';
+		_this.GMLA_7_ScreenTxt.font = 'gradefont';
+		_this.GMLA_7_ScreenTxt.fontSize = 20;
+		_this.GMLA_7_ScreenTxt.fontWeight = 'normal';
+		_this.GMLA_7_ScreenTxt.fill = 'white';
+		_this.GMLA_7_ScreenTxt.wordWrap = true;
+		_this.GMLA_7_ScreenTxt.wordWrapWidth = 500;
+		_this.GMLA_7_Screen.inputEnabled = true;
+		_this.GMLA_7_Screen.name = "GMAN-1";
+		_this.GMLA_7_Screen.input.useHandCursor = true;
+		_this.GMLA_7_Screen.events.onInputDown.add(function (target) {
+			_this.time.events.add(300, function () {
+				if (_this.tap) {
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('preloader_GMLA_07_G7', true, false);
+				}
+			}, _this);
+		}, _this);
+
+
 		if (window.languageSelected == "Hindi") {
-			
+			//_this.topicTitleText.frame = 1;
+			//_this.fractions1_1AScreenTxt.frame = 1;
 		}
 		else if (window.languageSelected == "Kannada") {
-		
+			//_this.topicTitleText.frame = 2;
+			//_this.fractions1_1AScreenTxt.frame = 2;
 		}
 		else {
-		
+			//_this.topicTitleText.frame = 0;
+			//_this.fractions1_1AScreenTxt.frame = 0;
 		}
 
 		_this.grade7ShapesGroup.add(_this.topicTxtBg);
@@ -715,6 +754,13 @@ Game.grade7Geometry.prototype = {
 		_this.grade7ShapesGroup.add(_this.bgGraphicInt12);
 		_this.grade7ShapesGroup.add(_this.GMLA_6_ScreenTxt);
 
+		// _this.grade7ShapesGroup.add(_this.GMAN_1_Screen);
+		// _this.grade7ShapesGroup.add(_this.bgGraphicNum6);
+		// _this.grade7ShapesGroup.add(_this.GMAN_1_ScreenTxt);
+
+		// _this.grade7ShapesGroup.add(_this.GMAN_1_Screen);
+		// _this.grade7ShapesGroup.add(_this.bgGraphicNum6);
+		// _this.grade7ShapesGroup.add(_this.GMAN_1_ScreenTxt);
 
 	},
 
@@ -724,6 +770,9 @@ Game.grade7Geometry.prototype = {
 		_this.topicTxtBg.beginFill(0x139487, 1);
 		_this.topicTxtBg.drawRoundedRect(0, 0, 210, 100, 10);
 		_this.topicTxtBg.boundsPadding = 0;
+
+		//_this.topicTitleText = _this.add.sprite(215,83,'lengthTitleTxt');
+		//_this.topicTitleText.anchor.setTo(0.5);
 
 		_this.topicTitleText = this.add.text(205, 85, ' \n ' + window.selctedLang.mensurationTitle + ' \n ');
 		_this.topicTitleText.anchor.setTo(0.5);
@@ -737,24 +786,84 @@ Game.grade7Geometry.prototype = {
 
 		_this.topicTitleText.wordWrap = true;
 		_this.topicTitleText.wordWrapWidth = 500;
-		
+		//_this.topicTitleText.setTextBounds(0,0,500,500);
+		//_this.topicTitleText.padding.set(50, 50);
+
+
+		//_this.topicTitleText.useAdvancedWrap  = true;
+
+
+		//_this.topicTitleText.setShadow(0, 0, 'rgba(0, 0, 0, 0)', 0);
+
+
 		_this.topicBg = _this.add.graphics(75, 100);
 		_this.topicBg.lineStyle(0, 0xFFFFFF, 0.8);
 		_this.topicBg.beginFill(0x139487, 1);
 		_this.topicBg.drawRoundedRect(0, 0, 805, 200, 30);
 		_this.topicBg.boundsPadding = 0;
 
+		// _this.GMPAR_1_Screen = _this.add.sprite(100,120,'GMPAR_1_Screen');
+		// _this.bgGraphicInt1 = this.add.graphics(210,175);
+		// _this.bgGraphicInt1.lineStyle(0, 0xFFFFFF, 0.8);
+		// _this.bgGraphicInt1.beginFill(0x493A19, 1);
+		// _this.bgGraphicInt1.drawRoundedRect(0,0,30,30,10);
+		// _this.bgGraphicInt1.boundsPadding = 0;
+		// _this.GMPAR_1_ScreenTxt = this.add.text(225, 192, ' \n '+window.selctedLang.GMPAR_1_Screen+' \n ');
+		// _this.GMPAR_1_ScreenTxt.anchor.setTo(0.5);
+		// _this.GMPAR_1_ScreenTxt.align = 'center';
+		// _this.GMPAR_1_ScreenTxt.font = 'gradefont';
+		// _this.GMPAR_1_ScreenTxt.fontSize = 20;
+		// _this.GMPAR_1_ScreenTxt.fontWeight = 'normal';
+		// _this.GMPAR_1_ScreenTxt.fill = 'white';
+		// _this.GMPAR_1_ScreenTxt.wordWrap = true;
+		// _this.GMPAR_1_ScreenTxt.wordWrapWidth = 500;
+		// _this.GMPAR_1_Screen.inputEnabled = true;
+		// _this.GMPAR_1_Screen.input.useHandCursor = true;
+		// _this.GMPAR_1_Screen.name = "INT-1";
+		// _this.GMPAR_1_Screen.events.onInputDown.add(function(target){
+		// 	_this.time.events.add(300, function(){
+		// 		if(_this.tap)
+		// 		{
+		// 			_this.time.events.removeAll();
+		// 			target.events.onInputDown.removeAll();
+		// 			_this.clickSound = _this.add.audio('ClickSound');
+		// 			_this.clickSound.play();
+		// 			_this.state.start('preloader_GMPAR_01_G6',true,false);
+		// 		}
+		// 	},_this);
+		// },_this);
+
+
+
 		if (window.languageSelected == "Hindi") {
-			
+			//_this.topicTitleText.frame = 1;
+			//_this.length2_1AScreenTxt.frame = 1;
+			//_this.length2_1BScreenTxt.frame = 1;
+			//_this.length2_2ScreenTxt.frame = 1;
+			//_this.length2_3ScreenTxt.frame = 1;
 		}
 		else if (window.languageSelected == "Kannada") {
-		
+			//_this.topicTitleText.frame = 2;
+			//_this.length2_1AScreenTxt.frame = 2;
+			//_this.length2_1BScreenTxt.frame = 2;
+			//_this.length2_2ScreenTxt.frame = 2;
+			//_this.length2_3ScreenTxt.frame = 2;
 		}
 		else {
-			
+			//_this.topicTitleText.frame = 0;
+			//_this.length2_1AScreenTxt.frame = 0;
+			//_this.length2_1BScreenTxt.frame = 0;
+			//_this.length2_2ScreenTxt.frame = 0;
+			//_this.length2_3ScreenTxt.frame = 0;
 		}
 
-	
+		// _this.grade7MensurationGroup.add(_this.topicTxtBg);
+		// _this.grade7MensurationGroup.add(_this.topicTitleText);
+		// _this.grade7MensurationGroup.add(_this.topicBg);
+
+		// _this.grade7MensurationGroup.add(_this.GMPAR_1_Screen);
+		// _this.grade7MensurationGroup.add(_this.bgGraphicInt1);
+		// _this.grade7MensurationGroup.add(_this.GMPAR_1_ScreenTxt);
 
 	},
 
@@ -817,6 +926,50 @@ Game.grade7Geometry.prototype = {
 			this.video3 = null;
 		}
 	},
+	//userprogress
+
+	// localdatasuccess:function(result) {
+	// 	console.log("start localdatasuccess",result);
+	// 	console.log("start localdatasuccess"+result.rows.length);
+	// 	if(result.rows.length>0)
+	// 	{
+	// 		console.log("inside if statement",result.rows.item(0));
+	// 		console.log("mins",result.rows.item(0).Mins);
+	// 		console.log("Hrs",result.rows.item(0).Hrs);
+	// 		console.log("secs",result.rows.item(0).Secs);
+	// 		_this.convertTimeinMinandSectoHrsMinsSecs(result.rows.item(0).Hrs,result.rows.item(0).Mins,result.rows.item(0).Secs);
+	// 	}
+	// 	else {
+	// 		_this.storingGameDetails();
+	// 	}
+	// },
+
+	// localdatafailed : function(error){
+	// 	console.log(error);
+	// },
+
+
+	// storingGameDetails :function()
+	// {
+	// 	console.log("inside storingGameDetails",_this.userHasPlayed,_this.timeInMinutes,_this.timeInSeconds,_this.game_id);
+	// 	console.log(device.serial+"_"+device.uuid);
+	// 	var save_assessment ={
+	// 		device_id:device.serial+"_"+device.uuid,
+	// 		grade: _this.grade,
+	// 		microConcept: _this.microConcepts,
+	// 		gradeTopics:_this.gradeTopics,
+	// 		game_id:_this.game_id,
+	// 		totalLearningTimeinHrs:'0',
+	// 		totalLearningTimeinMins:_this.timeInMinutes.toString(),
+	// 		totalLearningTimeinSecs:_this.timeInSeconds.toString(),
+	// 		score:_this.score,
+	// 	}
+	// 	console.log("save assessment",save_assessment.microConcept);
+	// 	if(_this.userHasPlayed == 1)
+	// 	{
+	// 		BBplusplusdbDetails.userProgressSaving(save_assessment);
+	// 	}
+	// },
 
 	convertTimeinMinandSectoHrsMinsSecs: function (Hours1, Minutes1, Seconds1) {
 		console.log("inside convert time", Hours1, Minutes1, Seconds1);

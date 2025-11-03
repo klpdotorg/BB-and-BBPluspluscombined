@@ -1,12 +1,13 @@
 #import <Cordova/CDV.h>
 #import "AppDelegate.h"
-#import "Firebase.h"
+#import "FirebaseWrapper.h"
 @import FirebaseFirestore;
 
 @interface FirebasePlugin : CDVPlugin
 
 - (void)setAutoInitEnabled:(CDVInvokedUrlCommand*)command;
 - (void)isAutoInitEnabled:(CDVInvokedUrlCommand*)command;
+- (void)sendPendingNotifications;
 
 // Authentication
 - (void)verifyPhoneNumber:(CDVInvokedUrlCommand*)command;
@@ -18,8 +19,12 @@
 - (void)signInUserAnonymously:(CDVInvokedUrlCommand*)command;
 - (void)authenticateUserWithGoogle:(CDVInvokedUrlCommand*)command;
 - (void)authenticateUserWithApple:(CDVInvokedUrlCommand*)command;
+- (void)authenticateUserWithMicrosoft:(CDVInvokedUrlCommand*)command;
+- (void)authenticateUserWithFacebook:(CDVInvokedUrlCommand*)command;
+- (void)authenticateUserWithOAuth:(CDVInvokedUrlCommand*)command;
 - (void)signInWithCredential:(CDVInvokedUrlCommand*)command;
 - (void)linkUserWithCredential:(CDVInvokedUrlCommand*)command;
+- (void)unlinkUserWithProvider:(CDVInvokedUrlCommand*)command;
 - (void)reauthenticateWithCredential:(CDVInvokedUrlCommand*)command;
 - (void)isUserSignedIn:(CDVInvokedUrlCommand*)command;
 - (void)signOutUser:(CDVInvokedUrlCommand*)command;
@@ -27,12 +32,17 @@
 - (void)reloadCurrentUser:(CDVInvokedUrlCommand*)command;
 - (void)updateUserProfile:(CDVInvokedUrlCommand*)command;
 - (void)updateUserEmail:(CDVInvokedUrlCommand*)command;
+- (void)verifyBeforeUpdateEmail:(CDVInvokedUrlCommand*)command;
 - (void)sendUserEmailVerification:(CDVInvokedUrlCommand*)command;
 - (void)updateUserPassword:(CDVInvokedUrlCommand*)command;
 - (void)sendUserPasswordResetEmail:(CDVInvokedUrlCommand*)command;
 - (void)deleteUser:(CDVInvokedUrlCommand*)command;
 - (void)useAuthEmulator:(CDVInvokedUrlCommand*)command;
 - (void)getClaims:(CDVInvokedUrlCommand*)command;
+- (void)enrollSecondAuthFactor:(CDVInvokedUrlCommand*)command;
+- (void)verifySecondAuthFactor:(CDVInvokedUrlCommand*)command;
+- (void)listEnrolledSecondAuthFactors:(CDVInvokedUrlCommand*)command;
+- (void)unenrollSecondAuthFactor:(CDVInvokedUrlCommand*)command;
 
 // Remote notifications
 - (void)getId:(CDVInvokedUrlCommand*)command;
@@ -61,10 +71,12 @@
 // Analytics
 - (void)setAnalyticsCollectionEnabled:(CDVInvokedUrlCommand*)command;
 - (void)isAnalyticsCollectionEnabled:(CDVInvokedUrlCommand*)command;
+- (void)setAnalyticsConsentMode:(CDVInvokedUrlCommand*)command;
 - (void)logEvent:(CDVInvokedUrlCommand*)command;
 - (void)setScreenName:(CDVInvokedUrlCommand*)command;
 - (void)setUserId:(CDVInvokedUrlCommand*)command;
 - (void)setUserProperty:(CDVInvokedUrlCommand*)command;
+- (void)initiateOnDeviceConversionMeasurement:(CDVInvokedUrlCommand*)command;
 
 // Crashlytics
 - (void)setCrashlyticsCollectionEnabled:(CDVInvokedUrlCommand*)command;
@@ -115,6 +127,8 @@
 - (void) getInstallationToken:(CDVInvokedUrlCommand*)command;
 - (void) deleteInstallationId:(CDVInvokedUrlCommand*)command;
 
+
+
 // Internals
 + (FirebasePlugin *) firebasePlugin;
 + (NSString*) appleSignInNonce;
@@ -132,6 +146,8 @@
 - (void)setDefaultChannel:(CDVInvokedUrlCommand *)command;
 - (void)deleteChannel:(CDVInvokedUrlCommand *)command;
 - (void)listChannels:(CDVInvokedUrlCommand *)command;
+
+@property (nonatomic, readonly) BOOL isFCMEnabled;
 
 @property (nonatomic, copy) NSString *notificationCallbackId;
 @property (nonatomic, copy) NSString *openSettingsCallbackId;
