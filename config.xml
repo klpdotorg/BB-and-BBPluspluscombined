@@ -14,12 +14,13 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
+
+      <!-- Remove native splash screen -->        
+        <preference name="AndroidWindowSplashScreenBackground" value="#ffffffff" />
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/ic_launcher_monochrome.png" />   
+
        <preference name="AndroidPersistentFileLocation" value="Internal" />
 
-       <!-- disable native Android (Android 12+) window splash -->
-        <resource-file src="resources/android/ic_cdv_splashscreen.xml" target="app/src/main/res/drawable/ic_cdv_splashscreen.xml" />
-        <resource-file src="resources/android/ic_cdv_splashscreen.xml" target="app/src/main/res/mipmap-anydpi-v26/ic_cdv_splashscreen.xml" />
-        <resource-file src="resources/android/ic_cdv_splashscreen.xml" target="app/src/main/res/drawable-anydpi-v21/ic_cdv_splashscreen.xml" />
         <!-- if u get some error while generating release apk try adding these two lines  (error: mapReleaseSourceSetPaths FAILED)-->
         <preference name="GradlePluginGoogleServicesEnabled" value="true" />
         <preference name="GradlePluginGoogleServicesVersion" value="4.3.14" />
