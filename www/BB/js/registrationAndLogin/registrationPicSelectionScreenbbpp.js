@@ -374,7 +374,8 @@ Game.registrationPicSelectionScreenbbpp.prototype = {
 							//window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 							bbregloginbbpp.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId) values (?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid], null, null);
 							jsonresp.uid = acc_token;
-							_this.state.start('appLoginEditScreenbbpp', true, false, jsonresp, _this.app_Mode);//
+							// _this.state.start('appLoginEditScreenbbpp', true, false, jsonresp, _this.app_Mode);//
+							_this.state.start('adSplashScreen', true, false, jsonresp, _this.app_Mode);
 							//_this.state.start('index2bbpp',true,false,_this.user,false,_this.languageSelected);//**If ONLINE 
 						}
 						else {

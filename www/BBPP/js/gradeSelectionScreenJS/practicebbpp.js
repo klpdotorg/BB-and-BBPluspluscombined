@@ -89,7 +89,8 @@ Game.practiceModegradeSelectionScreenbbpp.prototype = {
 				}
 				console.log(window.user.deviceid, "PRACTICE JS BACK BTN");
 
-				game.state.start('appLoginEditScreenbbpp', true, false, window.user, window.app_Mode);
+				// game.state.start('appLoginEditScreenbbpp', true, false, window.user, window.app_Mode);
+				game.state.start('adSplashScreen', true, false, window.user, window.app_Mode);
 				
 			}, _this);
 

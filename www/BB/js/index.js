@@ -21,12 +21,12 @@ var app = {
   receivedEvent: function (id) {
 
     console.log("received event");
-  
+
 
     // bbreglogin.initializeDB();
 
     var game = new Phaser.Game(540, 960, Phaser.CANVAS, 'phaser_canvas', { preload: this.preload, create: this.create }, false, true, null);
-  
+
     game.state.add('boot', Game.boot);
     game.state.add('langSelectScreen', Game.langSelectScreen);
     game.state.add('preloader', Game.preloader);
@@ -45,6 +45,7 @@ var app = {
     game.state.add('userprogress2bbpp', Game.userprogress2bbpp);
     game.state.add('appLoginScreenbbpp', Game.appLoginScreenbbpp);
     game.state.add('appLoginEditScreenbbpp', Game.appLoginEditScreenbbpp);
+    game.state.add('adSplashScreen', Game.adSplashScreen);
     game.state.add('editLangScreenbbpp', Game.editLangScreenbbpp);
     game.state.add('registrationLangSelectionScreenbbpp', Game.registrationLangSelectionScreenbbpp);
     game.state.add('registrationPicSelectionScreenbbpp', Game.registrationPicSelectionScreenbbpp);
@@ -57,6 +58,10 @@ var app = {
   preload: function (game) {
     game.load.video('demo', './demo.mp4');
     game.load.image('splash', 'BB/assets/splash.png');
+    //added for extra splash image on 05/11/2025
+    game.load.image('adSplashEng', 'BB/assets/MOB-APP-ENG.jpg');
+    game.load.image('adSplashKan', 'BB/assets/MOB-APP-KAN.jpg');
+    // game.load.image('closeIcon', 'BB/assets/closeIcon.png');
     // game.load.image('splash', 'BBPP/assets/splash.png');
     game.load.image('helpIcon', './helpIcon.png');
     game.load.image('closeIcon', './closeIcon.png');
@@ -116,7 +121,7 @@ var app = {
 
     game.stage.backgroundColor = '#71c5cf';
     var splash = game.add.sprite(game.world.centerX, game.world.centerY, 'splash');
-    splash.scale.setTo(0.5,0.5);
+    splash.scale.setTo(0.5, 0.5);
     splash.anchor.setTo(0.5);
 
     console.log(game);
@@ -130,8 +135,19 @@ var app = {
 
     game.time.events.add(1000, function () {//600
       game.time.events.removeAll();
-     
+      // console.log("Timeout completed, showing ad splash");
+      // splash.destroy();
+      // self.showAdSplash(game, self.app_Mode);
+      // setTimeout(() => {
+      //   var adsplash = game.add.sprite(game.world.centerX, game.world.centerY, 'adSplashKan');
+      //   adsplash.scale.setTo(0.5, 0.5);
+      //   adsplash.anchor.setTo(0.5);
+      // }, 3000);
+      // setTimeout(() => {
       game.state.start('mainScreen', true, false, this.app_Mode);
+      // }, 4000);
+
+
 
     }, this);
 
