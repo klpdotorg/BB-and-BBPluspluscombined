@@ -173,7 +173,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 			for (var i = 0; i < _this.userArray.length; i++) {
 				if (_this.userArray[i].name.toLowerCase() == "fish") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -187,7 +188,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "butterfly") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -200,7 +202,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "flower") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -213,7 +216,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "parrot") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -226,7 +230,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "sun") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -239,7 +244,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "tree") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
 					return;
 				}
 			}

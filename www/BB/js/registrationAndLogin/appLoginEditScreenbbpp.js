@@ -8,12 +8,12 @@ Game.appLoginEditScreenbbpp.prototype = {
 		// if(screen.orientation == 'landscape')
 		// {
 		window.user = user;
-		if(user.deviceid){
+		if (user.deviceid) {
 			window.user.deviceid = user.deviceid;
-		}else if(user.deviceId){
+		} else if (user.deviceId) {
 			window.user.deviceid = user.deviceId;
 		}
-		console.log(user.deviceId,user.deviceid,"user.deviceId >>");
+		console.log(user.deviceId, user.deviceid, "user.deviceId >>");
 		screen.orientation.lock('portrait');
 		AndroidFullScreen.setSystemUiVisibility(AndroidFullScreen.SYSTEM_UI_FLAG_LOW_PROFILE, null, null);
 		_this.game.scale.setGameSize(540, 960);
@@ -24,6 +24,20 @@ Game.appLoginEditScreenbbpp.prototype = {
 		_this.user = user;
 		console.log(_this.user);
 		_this.app_Mode = app_Mode;
+
+		var adsplash = _this.game.add.sprite(_this.game.world.centerX, _this.game.world.centerY, 'adSplashEng');
+		adsplash.scale.setTo(0.5, 0.5);
+		adsplash.anchor.setTo(0.5);
+		_this.closeButton = _this.game.add.sprite(40, 40, 'closeIcon');
+		_this.closeButton.scale.setTo(0.35);
+		_this.closeButton.anchor.setTo(0.5);
+		_this.closeButton.inputEnabled = true;
+		_this.closeButton.events.onInputDown.add(function () {
+			console.log(_this.user, "i'm in splash creen  !!!");
+			adsplash.destroy();
+			_this.closeButton.destroy();
+		}, _this);
+
 	},
 
 	onDeviceReady: function () {
@@ -32,7 +46,7 @@ Game.appLoginEditScreenbbpp.prototype = {
 	},
 
 	preload: function (game) {
-	
+
 	},
 
 	create: function (game) {
@@ -47,7 +61,7 @@ Game.appLoginEditScreenbbpp.prototype = {
 		//* nEED to change this ****
 		_this.fullSize = 302978124;
 
-		
+
 
 		_this.zipFiles = [["Assets1.zip", 565373], ["Assets2.zip", 25572815], ["Assets4.zip", 66105124], ["EnglishquestionSounds.zip", 29272691], ["HINquestionSounds.zip", 29272691],
 		["KANquestionSounds.zip", 29272691], ["ODIquestionSounds.zip", 48682701], ["MARquestionSounds.zip", 39766797], ["TMquestionSounds.zip", 30783494], ["sounds.zip", 3742800]];
@@ -219,7 +233,6 @@ Game.appLoginEditScreenbbpp.prototype = {
 		_this.regandstsrtBtnTxt.wordWrap = true;
 		_this.regandstsrtBtnTxt.wordWrapWidth = 500;
 
-		// Need to discuss about this with hari sir ********
 		_this.userEditBtn = _this.add.sprite(game.world.centerX - 150, game.world.centerY, 'userEditBtn');
 		_this.userEditBtn.scale.setTo(0.4);
 		_this.userEditBtn.anchor.setTo(0.5);

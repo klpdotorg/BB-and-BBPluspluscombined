@@ -42,7 +42,8 @@ Game.editLangScreenbbpp.prototype = {
 		regBackArrow.inputEnabled = true;
 		regBackArrow.events.onInputDown.add(function () {
 			console.log(_this.user,"editLangScreenbbpp though");
-			game.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
+			// game.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
+			game.state.start('adSplashScreen', true, false, _this.user, _this.app_Mode);
 		}, this);
 
 		document.addEventListener('backbutton', _this.goback, false);
@@ -130,7 +131,9 @@ Game.editLangScreenbbpp.prototype = {
 	goback: function (e) {
 		document.removeEventListener('backbutton', _this.goback, false);
 		console.log(_this.user,"editLangScreenbbpp though");
-		_this.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
+		// _this.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
+		_this.state.start('adSplashScreen', true, false, _this.user, _this.app_Mode);
+		
 	},
 
 
@@ -273,7 +276,9 @@ Game.editLangScreenbbpp.prototype = {
 
 	localdatasuccess2: function (result) {
 		console.log(result.rows.item(0));
-		_this.state.start('appLoginEditScreenbbpp', true, false, result.rows.item(0), _this.app_Mode);
+		// _this.state.start('appLoginEditScreenbbpp', true, false, result.rows.item(0), _this.app_Mode);
+		_this.state.start('adSplashScreen', true, false, result.rows.item(0), _this.app_Mode);
+
 		
 	},
 
