@@ -24,20 +24,7 @@ Game.appLoginEditScreenbbpp.prototype = {
 		_this.user = user;
 		console.log(_this.user);
 		_this.app_Mode = app_Mode;
-
-		var adsplash = _this.game.add.sprite(_this.game.world.centerX, _this.game.world.centerY, 'adSplashEng');
-		adsplash.scale.setTo(0.5, 0.5);
-		adsplash.anchor.setTo(0.5);
-		_this.closeButton = _this.game.add.sprite(40, 40, 'closeIcon');
-		_this.closeButton.scale.setTo(0.35);
-		_this.closeButton.anchor.setTo(0.5);
-		_this.closeButton.inputEnabled = true;
-		_this.closeButton.events.onInputDown.add(function () {
-			console.log(_this.user, "i'm in splash creen  !!!");
-			adsplash.destroy();
-			_this.closeButton.destroy();
-		}, _this);
-
+		
 	},
 
 	onDeviceReady: function () {

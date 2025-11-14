@@ -18,6 +18,7 @@ Game.appLoginScreen.prototype = {
 	},
 
 	create: function (game) {
+		console.log("I am in appLoginScreen");
 		
 		screen.orientation.lock('portrait');
 		AndroidFullScreen.setSystemUiVisibility(AndroidFullScreen.SYSTEM_UI_FLAG_LOW_PROFILE, null, null);
@@ -165,7 +166,8 @@ Game.appLoginScreen.prototype = {
 			for (var i = 0; i < _this.userArray.length; i++) {
 				if (_this.userArray[i].name.toLowerCase() == "fish") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -179,7 +181,8 @@ Game.appLoginScreen.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "butterfly") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -192,7 +195,8 @@ Game.appLoginScreen.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "flower") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -205,7 +209,8 @@ Game.appLoginScreen.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "parrot") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -218,7 +223,8 @@ Game.appLoginScreen.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "sun") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -231,7 +237,8 @@ Game.appLoginScreen.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "tree") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					_this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					// _this.state.start('appLoginEditScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbb', true, false, _this.userArray[i]);
 					return;
 				}
 			}

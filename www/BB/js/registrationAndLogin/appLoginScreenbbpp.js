@@ -152,7 +152,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 					return;
 				}
 			}
@@ -168,7 +168,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 					return;
 				}
 			}
@@ -183,7 +183,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 
 					return;
 				}
@@ -199,7 +199,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 
 					return;
 				}
@@ -215,7 +215,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 
 					return;
 				}
@@ -231,7 +231,7 @@ Game.appLoginScreenbbpp.prototype = {
 
 					//_this.state.start('index2',true,false,_this.user,false);//**If ONLINE 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);//**Offline */
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i], _this.app_Mode);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i], _this.app_Mode);
 
 					return;
 				}

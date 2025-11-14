@@ -20,6 +20,7 @@ Game.editLangScreen.prototype = {
 	},
 
 	create: function (game) {
+		console.log("I am in editLangScreen");
 		//Fullscreen.off();
 
 		var splash = game.add.sprite(game.world.centerX, game.world.centerY, 'registrationbg');
@@ -44,7 +45,8 @@ Game.editLangScreen.prototype = {
 
 		regBackArrow.inputEnabled = true;
 		regBackArrow.events.onInputDown.add(function () {
-			game.state.start('appLoginEditScreen', true, false, _this.user);
+			// game.state.start('appLoginEditScreen', true, false, _this.user);
+			game.state.start('adSplashScreenbb', true, false, _this.user);
 		}, this);
 
 		document.addEventListener('backbutton', _this.goback, false);
@@ -147,7 +149,8 @@ Game.editLangScreen.prototype = {
 
 	goback: function (e) {
 		document.removeEventListener('backbutton', _this.goback, false);
-		_this.state.start('appLoginEditScreen', true, false, _this.user);
+		// _this.state.start('appLoginEditScreen', true, false, _this.user);
+		_this.state.start('adSplashScreenbb', true, false, _this.user);
 	},
 
 
@@ -297,7 +300,8 @@ Game.editLangScreen.prototype = {
 		//{
 		//for (var i = 0; i < result.rows.length; i++) 
 		//{
-		_this.state.start('appLoginEditScreen', true, false, result.rows.item(0));
+		// _this.state.start('appLoginEditScreen', true, false, result.rows.item(0));
+		_this.state.start('adSplashScreenbb', true, false, result.rows.item(0));
 		//}	
 		//}		
 	},
