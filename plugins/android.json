@@ -76,6 +76,19 @@
     },
     "cordova-sqlite-storage": {
       "PACKAGE_NAME": "com.akshara.easymath"
+    },
+    "cordova-plugin-facebook-connect": {
+      "APP_ID": "730057936777731",
+      "APP_NAME": "Building Blocks 1-8 by Akshara",
+      "FACEBOOK_URL_SCHEME_SUFFIX": " ",
+      "OTHER_APP_SCHEMES": " ",
+      "FACEBOOK_AUTO_LOG_APP_EVENTS": "true",
+      "FACEBOOK_HYBRID_APP_EVENTS": "false",
+      "FACEBOOK_ADVERTISER_ID_COLLECTION": "true",
+      "FACEBOOK_ANDROID_SDK_VERSION": "11.3.0",
+      "FACEBOOK_IOS_SDK_VERSION": "11.1.0",
+      "FACEBOOK_BROWSER_SDK_VERSION": "v11.0",
+      "PACKAGE_NAME": "com.akshara.easymath"
     }
   },
   "dependent_plugins": {

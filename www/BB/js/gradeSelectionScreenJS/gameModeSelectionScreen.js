@@ -51,7 +51,7 @@ Game.gameModeSelectionScreen.prototype = {
 	},
 
 	create: function (game) {
-
+		console.log("I am in gameModeSelectionScreen");
 
 		window.prevScreen = "gameModeSelectionScreen";
 		window.currScreen = "gameModeSelectionScreen";
@@ -106,6 +106,7 @@ Game.gameModeSelectionScreen.prototype = {
 			console.log(window.user.deviceid, "PRACTICE JS BACK BTN");
 
 			_this.state.start('appLoginEditScreen', true, false, window.user);
+			// _this.state.start('adSplashScreenbb', true, false, window.user);
 			//}
 
 		}, this);

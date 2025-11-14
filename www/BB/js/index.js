@@ -13,6 +13,15 @@ var app = {
   },
 
   onDeviceReady: function () {
+    console.log("Device ready");
+
+    try {
+      facebookConnectPlugin.activateApp();
+      console.log("Facebook App Events activated");
+    } catch (e) {
+      console.log("FB plugin not available", e);
+    }
+
     this.receivedEvent('deviceready');
     AndroidFullScreen.immersiveMode(successFunction, errorFunction);
   },
@@ -30,6 +39,7 @@ var app = {
     game.state.add('boot', Game.boot);
     game.state.add('langSelectScreen', Game.langSelectScreen);
     game.state.add('preloader', Game.preloader);
+    game.state.add('adSplashScreenbb', Game.adSplashScreenbb);
     game.state.add('userprogress', Game.userprogress);
     game.state.add('userprogress2', Game.userprogress2);
     game.state.add('appLoginScreen', Game.appLoginScreen);
@@ -41,11 +51,11 @@ var app = {
 
     // game.state.add('bbppb', Game.bbppb);
     game.state.add('preloaderbbpp', Game.preloaderbbpp);
+    game.state.add('adSplashScreenbbpp', Game.adSplashScreenbbpp);
     game.state.add('userprogressbbpp', Game.userprogressbbpp);
     game.state.add('userprogress2bbpp', Game.userprogress2bbpp);
     game.state.add('appLoginScreenbbpp', Game.appLoginScreenbbpp);
     game.state.add('appLoginEditScreenbbpp', Game.appLoginEditScreenbbpp);
-    game.state.add('adSplashScreen', Game.adSplashScreen);
     game.state.add('editLangScreenbbpp', Game.editLangScreenbbpp);
     game.state.add('registrationLangSelectionScreenbbpp', Game.registrationLangSelectionScreenbbpp);
     game.state.add('registrationPicSelectionScreenbbpp', Game.registrationPicSelectionScreenbbpp);
@@ -59,8 +69,15 @@ var app = {
     game.load.video('demo', './demo.mp4');
     game.load.image('splash', 'BB/assets/splash.png');
     //added for extra splash image on 05/11/2025
-    game.load.image('adSplashEng', 'BB/assets/MOB-APP-ENG.jpg');
-    game.load.image('adSplashKan', 'BB/assets/MOB-APP-KAN.jpg');
+    // game.load.image('adSplashEng', 'BB/assets/MOB-APP-ENG.jpg');
+    // game.load.image('adSplashKan', 'BB/assets/MOB-APP-KAN.jpg');
+    // game.load.image('adSplashHin', 'BB/assets/MOB-APP-HIN.jpg');
+    // game.load.image('adSplashOdi', 'BB/assets/MOB-APP-ODI.jpg');
+    // game.load.image('adSplashMar', 'BB/assets/MOB-APP-MAR.jpg');
+    // game.load.image('adSplashTam', 'BB/assets/MOB-APP-TAM.jpg');
+    // game.load.image('adSplashTlg', 'BB/assets/MOB-APP-TLG.jpg');
+    // game.load.image('adSplashUrd', 'BB/assets/MOB-APP-URD.jpg');
+    // game.load.image('adSplashGuj', 'BB/assets/MOB-APP-GUJ.jpg');
     // game.load.image('closeIcon', 'BB/assets/closeIcon.png');
     // game.load.image('splash', 'BBPP/assets/splash.png');
     game.load.image('helpIcon', './helpIcon.png');

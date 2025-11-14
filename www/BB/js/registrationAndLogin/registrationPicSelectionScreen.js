@@ -15,6 +15,7 @@ Game.registrationPicSelectionScreen.prototype = {
 	},
 
 	create: function (game) {
+		console.log("I am in registrationPicSelectionScreen");
 		var avatarSelected = null;
 		//Fullscreen.on();
 		var splash = game.add.sprite(game.world.centerX, game.world.centerY, 'registrationbg');
@@ -362,7 +363,8 @@ Game.registrationPicSelectionScreen.prototype = {
 							// window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 							bbreglogin.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId) values (?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid], null, null);
 							jsonresp.uid = acc_token;
-							_this.state.start('appLoginEditScreen', true, false, jsonresp);
+							// _this.state.start('appLoginEditScreen', true, false, jsonresp);
+							_this.state.start('adSplashScreenbb', true, false, jsonresp);
 						}
 						else {
 

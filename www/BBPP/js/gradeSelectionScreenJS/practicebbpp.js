@@ -58,7 +58,7 @@ Game.practiceModegradeSelectionScreenbbpp.prototype = {
 	},
 
 	create: function (game) {
-
+		console.log("I am in practicebbpp");
 
 		window.prevScreen = "gameScreen";
 		window.currScreen = "practiceModegradeSelectionScreenbbpp";
@@ -89,9 +89,9 @@ Game.practiceModegradeSelectionScreenbbpp.prototype = {
 				}
 				console.log(window.user.deviceid, "PRACTICE JS BACK BTN");
 
-				// game.state.start('appLoginEditScreenbbpp', true, false, window.user, window.app_Mode);
-				game.state.start('adSplashScreen', true, false, window.user, window.app_Mode);
-				
+				game.state.start('appLoginEditScreenbbpp', true, false, window.user, window.app_Mode);
+				// game.state.start('adSplashScreenbbpp', true, false, window.user, window.app_Mode);
+
 			}, _this);
 
 			this.gameProgressBtn = game.add.image(820, 18, 'userProgressIcon');//870, 18,
@@ -218,11 +218,11 @@ Game.practiceModegradeSelectionScreenbbpp.prototype = {
 			_this.graphicsBg.addChild(_this.grade6Cloud);
 			_this.graphicsBg.addChild(_this.grade7Cloud);
 			_this.graphicsBg.addChild(_this.grade8Cloud);
-	
+
 			_this.graphicsBg.addChild(_this.grade6CloudTxt);
 			_this.graphicsBg.addChild(_this.grade7CloudTxt);
 			_this.graphicsBg.addChild(_this.grade8CloudTxt);
-		
+
 		}
 
 	},

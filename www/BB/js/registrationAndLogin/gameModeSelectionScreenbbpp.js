@@ -13,6 +13,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 	},
 
 	create: function (game) {
+		console.log("I am in gameModeSelectionScreenbbpp");
 		//AndroidFullScreen.setSystemUiVisibility(AndroidFullScreen.SYSTEM_UI_FLAG_LOW_PROFILE, null, null);
 		//AndroidFullScreen.setSystemUiVisibility(AndroidFullScreen.SYSTEM_UI_FLAG_FULLSCREEN | AndroidFullScreen.SYSTEM_UI_FLAG_LOW_PROFILE, null, null);
 		screen.orientation.lock('portrait');
@@ -174,9 +175,9 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				if (_this.userArray[i].name.toLowerCase() == "fish") {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
-				}
+				} 
 			}
 		}, this);
 
@@ -189,7 +190,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -203,7 +204,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -217,7 +218,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -231,7 +232,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
 				}
 			}
@@ -245,7 +246,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreen', true, false, _this.userArray[i]);
+					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
 				}
 			}
