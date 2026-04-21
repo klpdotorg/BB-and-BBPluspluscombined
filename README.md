@@ -95,3 +95,14 @@ Notes for your project:
 
 nativeApp.openPlaystore() exists as stub at nativeapp.js (line 101); you can use direct store URL from JS if native method isn’t implemented.
 adSplashScreenbb.js already fetches server config, so you can host update config similarly.
+
+
+changes moved on 21-04-26
+Push Notifications and Mandatory Updates	Described in "Push Notification in BB App" word document Trigger logic and job setup
+Push Notification Performance Analytics	Push notification performance (Sent, Delivery rate, open rate)
+Secure Back-End Administrative Portal	User authentication (user creation from backend) Password reset function for users
+Force Update feature	
+Logo	To be updated
+Avatar / Profile Pic	To be removed and limited only to 1 default option
+Pop Up Quiz	To be removed
+Added grade also along with deviceid and name for differentiating the 1-5 and 6-8 game. now for 1-5 it's storing grade 1 and 6-8 grade 6
