@@ -19,6 +19,8 @@ Game.registrationLangSelectionScreen.prototype = {
     splash.scale.setTo(1);
     splash.anchor.setTo(0.5);
 
+    var avatarSelected = "Fish"; // only avatar
+
     var titleBar = game.add.graphics(0, 0);
     titleBar.anchor.setTo(0.5);
     titleBar.lineStyle(2, 0x000000, 0.8);
@@ -163,7 +165,7 @@ Game.registrationLangSelectionScreen.prototype = {
 
   goback: function (e) {
     document.removeEventListener("backbutton", _this.goback, false);
-    _this.state.start("appLoginScreen", true, false);
+    _this.state.start("appLoginScreen", true, false);//, lang
   },
 
   createDropDownMenu: function (
@@ -241,21 +243,224 @@ Game.registrationLangSelectionScreen.prototype = {
             Select_language: lang,
             item_id: "",
           });
-
-          game.state.start(
-            "registrationPicSelectionScreen",
-            true,
-            false,
-            lang,
-            _this.user
-          );
+          FirebasePlugin.logEvent("Selected_Avatar", {
+            Selected_Avatar: "Fish",
+            item_id: "",
+          });
+          FirebasePlugin.logEvent("Button_click_tick_register", {
+            Button_click_tick_regst: "",
+            item_id: "",
+          });
+          this.register(targets, "Fish", lang);
         }, this);
       }
     }, this);
 
+    //   FirebasePlugin.logEvent("Select_language", {
+    //     Select_language: lang,
+    //     item_id: "",
+    //   });
+
+    //   game.state.start(
+    //     "registrationPicSelectionScreen",
+    //     true,
+    //     false,
+    //     lang,
+    //     _this.user
+    //   );
+    // }, this);
+    //   }
+    // }, this);
+
     grp.add(this["languagegraphicsBg" + i]);
     if (i + 1 < 10) grp.add(this["sprite" + i]);
     grp.add(this["languageTxt" + i]);
+  },
+
+  register: function (target, avatarSelected, lang) {
+    target.inputEnabled = false;
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+      _this.language = lang;
+      var fcmToken = localStorage.getItem("pending_fcm_token") || localStorage.getItem("fcm_token") || "";
+      var lastLogin = new Date().toISOString();
+
+      console.log(window.ApiConfig.url('register'), "register url");
+      //var jsondata = { name: avatarSelected, gender: null, schooltype: "0", geo: "77.580643,12.972442", grade: "1st Grade", deviceid: device.serial + "_" + device.uuid, language: this.language, organization: "Akshara" };
+      var jsondata = { name: avatarSelected, schooltype: "0", geo: "77.580643,12.972442", grade: "1st Grade", deviceid: id, language: _this.language, organization: "Akshara", avatarpic: avatarSelected, fcm_token: fcmToken, last_login: lastLogin, app_version_name: app.APP_VERSION_NAME };
+      //var jsondata = {name:avatarSelected,gender:null,schooltype:"0",geo:"77.580643,12.972442",grade:"1st Grade",deviceid:123456,language:_this.language,organization:"Akshara"};
+      console.log(jsondata);
+      if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
+        // var apiurl = "https://abbmath.klp.org.in/abbchmprm/register";
+        console.log("inside api call register-------------------");
+        console.log(window.ApiConfig.url('register'), "register url");
+        var apiurl = window.ApiConfig.url('register');
+        //var apiurl = "https://10.0.2.2/abbchmprm/register";         		        
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "text",
+          // dataType: "json",
+          // async:false, // set to false to perform a synchronous request
+          data: JSON.stringify(jsondata),
+          contentType: 'application/json; charset=UTF-8',
+          accepts: 'application/json',
+          success: function (respText) {
+            console.log(respText);
+            console.log("raw register response text:", respText);
+            // strip any prefix and parse
+            var firstBrace = respText.indexOf('{');
+            var payload = firstBrace >= 0 ? respText.substring(firstBrace) : respText;
+            try {
+              var jsonresp = JSON.parse(payload);
+            } catch (e) {
+              console.error("JSON parse failed:", e, "payload:", payload);
+              target.inputEnabled = true;
+              return;
+            }
+            console.log("register response:", jsonresp);
+            if (jsonresp.status == "success") {
+              console.log("success")
+              // window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+              target.events.onInputDown.removeAll();
+              _this.checkOnlineForData(avatarSelected);
+            }
+            else {
+              window.plugins.toast.show(jsonresp.status + "\n" + jsonresp.description, 3000, "bottom");
+              target.inputEnabled = true;
+            }
+
+          },
+          // error: function (error) {
+          error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(error);
+            console.log("register api failed");
+            console.log("url:", apiurl);
+            console.log("status:", jqXHR && jqXHR.status);
+            console.log("statusText:", jqXHR && jqXHR.statusText);
+            console.log("textStatus:", textStatus);
+            console.log("errorThrown:", errorThrown);
+            console.log("responseText:", jqXHR && jqXHR.responseText);
+            window.plugins.toast.show("Register failed: " + (jqXHR && jqXHR.status) + " " + (textStatus || ""), 3000, "bottom");
+            // window.plugins.toast.show(error, 3000, "bottom");
+            target.inputEnabled = true;
+          }
+
+        });
+      }
+      else {
+        window.plugins.toast.show("please check your internet connection and try again", 3000, "bottom");
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+    });
+
+  },
+
+  checkOnlineForData: function (avatarName) {
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+
+      //var jsondata = { name: avatarName, deviceid: device.serial + "_" + device.uuid };
+      var jsondata = { name: avatarName, deviceid: id, grade: "1st Grade", app_version_name: app.APP_VERSION_NAME };
+      //var jsondata = {name:avatarName,deviceid:123456};
+
+      if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
+        // var apiurl = "https://abbmath.klp.org.in/abbchmprm/login";
+        console.log(window.ApiConfig.url('login'), "login url");
+        var apiurl = window.ApiConfig.url('login');
+        //var apiurl = "https://10.0.2.2/abbchmprm/login";      		        
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "json",
+          // async:false, // set to false to perform a synchronous request
+          data: JSON.stringify(jsondata),
+          contentType: 'application/json; charset=UTF-8',
+          accepts: 'application/json',
+          success: function (jsonresp) {
+            console.log(jsonresp);
+            if (jsonresp.status == "success") {
+              // window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+              _this.checkOnlineForData2(avatarName, jsonresp.description);
+
+            }
+            else {
+
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log("login api failed");
+            console.log("url:", apiurl);
+            console.log("status:", jqXHR && jqXHR.status);
+            console.log("statusText:", jqXHR && jqXHR.statusText);
+            console.log("textStatus:", textStatus);
+            console.log("errorThrown:", errorThrown);
+            console.log("responseText:", jqXHR && jqXHR.responseText);
+            window.plugins.toast.show("Login failed: " + (jqXHR && jqXHR.status) + " " + (textStatus || ""), 3000, "bottom");
+          }
+          // error: function (error) {
+          //   console.log(error);
+          //   window.plugins.toast.show(error, 1000, "bottom");
+          // }
+        });
+      }
+      else {
+        window.plugins.toast.show("please check your internet connection and try again", 3000, "bottom");
+        document.addEventListener("online", _this.checkNetwork, false);
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+    });
+  },
+
+  checkOnlineForData2: function (avatarName, acc_token) {
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+
+      //var jsondata = { name: avatarName, deviceid: device.serial + "_" + device.uuid };
+      var jsondata = { name: avatarName, deviceid: id, grade: "1st Grade" };
+      //var jsondata = {name:avatarName,deviceid:123456};
+      console.log(window.ApiConfig.url('getchild'), "getchild url");
+      if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
+        // var apiurl = "https://abbmath.klp.org.in/abbchmprm/getchild";
+        console.log(window.ApiConfig.url('getchild'), "getchild url");
+        var apiurl = window.ApiConfig.url('getchild');
+        //var apiurl = "https://10.0.2.2/abbchmprm/getchild";     		        
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "json",
+          // async:false, // set to false to perform a synchronous request
+          data: JSON.stringify(jsondata),
+          contentType: 'application/json; charset=UTF-8',
+          accepts: 'application/json',
+          success: function (jsonresp) {
+            console.log(jsonresp);
+            if (jsonresp.status == "success") {
+              // window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+              bbreglogin.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId, grade) values (?,?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid, (jsonresp.grade || '1st Grade')], null, null);
+              jsonresp.uid = acc_token;
+              // _this.state.start('appLoginEditScreen', true, false, jsonresp);
+              _this.state.start('adSplashScreenbb', true, false, jsonresp);
+            }
+            else {
+              console.log("getchild api returned non-success status:", jsonresp);
+              window.plugins.toast.show((jsonresp && jsonresp.description) ? jsonresp.description : "Unable to fetch child data", 3000, "bottom");
+            }
+          },
+          error: function (error) {
+            window.plugins.toast.show(error, 3000, "bottom");
+
+          }
+        });
+      }
+      else {
+        window.plugins.toast.show("please check your internet connection and try again", 3000, "bottom");
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+    });
   },
 
   shutdown: function () {

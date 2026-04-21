@@ -16,19 +16,23 @@ Game.appLoginEditScreen.prototype = {
     _this.game.scale.setGameSize(540, 960);
     _this.scale.forceOrientation(true, false);
     document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-    
+
     _this.user = user;
     console.log(_this.user);
+    console.log(this.user.uid, "this.user.uid", this.user, "this.user");
+
+    var accessToken = this.user && this.user.uid ? this.user.uid : "";
+    window.acctkn = accessToken;
   },
 
   preload: function (game) {
-   
+
   },
-  
-	onDeviceReady: function () {
-		//this.receivedEvent('deviceready');
-		AndroidFullScreen.immersiveMode(successFunction, errorFunction);
-	},
+
+  onDeviceReady: function () {
+    //this.receivedEvent('deviceready');
+    AndroidFullScreen.immersiveMode(successFunction, errorFunction);
+  },
 
   create: function (game) {
     _this = this;
@@ -213,11 +217,34 @@ Game.appLoginEditScreen.prototype = {
     titleTxt.wordWrap = true;
     titleTxt.wordWrapWidth = 500;
 
-    var avatar = game.add.sprite(
-      game.world.centerX,
-      game.world.centerY,
-      _this.user.name.toLowerCase()
-    );
+    var welcomeTextMap = {
+      English: "Welcome to \n Building Blocks",
+      Hindi: "बिल्डिंग ब्लॉक्स में \n आपका स्वागत है",
+      Kannada: "ಬಿಲ್ಡಿಂಗ್ ಬ್ಲಾಕ್ಸ್‌ಗೆ \n ಸ್ವಾಗತ",
+      Odiya: "ବିଲ୍ଡିଂ ବ୍ଲକ୍ସକୁ \n ସ୍ୱାଗତ",
+      Gujarati: "બિલ્ડિંગ બ્લોક્સમાં \n આપનું સ્વાગત છે",
+      Marathi: "बिल्डिंग ब्लॉक्समध्ये \n आपले स्वागत आहे",
+      Telugu: "బిల్డింగ్ బ్లాక్స్‌కు \n స్వాగతం",
+      Tamil: "பில்டிங் பிளாக்ஸ் இற்கு \n வரவேற்கிறோம்",
+      Urdu: "بلڈنگ بلاکس میں \n خوش آمدید"
+    };
+
+    var welcome = welcomeTextMap[_this.user && _this.user.language] || welcomeTextMap.English;
+
+    var selectPicTxt = game.add.text(game.world.centerX, 150, welcome);
+
+    selectPicTxt.x = Math.round(selectPicTxt.x);
+    selectPicTxt.anchor.setTo(0.5);
+    selectPicTxt.align = 'center';
+    selectPicTxt.font = 'regfont3';
+    selectPicTxt.fontSize = '26pt';
+    selectPicTxt.fontWeight = 0;
+    selectPicTxt.fill = '#494949';
+    selectPicTxt.wordWrap = true;
+    selectPicTxt.wordWrapWidth = 500;
+
+    var avatar = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');//_this.user.name.toLowerCase()
+
     avatar.scale.setTo(0.8);
     avatar.anchor.setTo(0.5);
 
@@ -297,7 +324,8 @@ Game.appLoginEditScreen.prototype = {
     _this.regBackArrow.inputEnabled = true;
     _this.regBackArrow.events.onInputDown.add(function () {
       console.log(_this.user, "APPLOgEDitScreen Back btn !!!");
-      _this.state.start("appLoginScreen", true, false, _this.user.language);
+      // _this.state.start("appLoginScreen", true, false, _this.user.language);
+      _this.state.start('mainScreen', true, false, "online");
     }, _this);
 
     document.addEventListener("backbutton", _this.goback, false);
@@ -447,7 +475,8 @@ Game.appLoginEditScreen.prototype = {
 
       _this.regBackArrow.inputEnabled = true;
       _this.regBackArrow.events.onInputDown.add(function () {
-        _this.state.start("appLoginScreen", true, false);
+        // _this.state.start("appLoginScreen", true, false);
+        _this.state.start('mainScreen', true, false, "online");
       }, _this);
 
       document.addEventListener("backbutton", _this.goback, false);
@@ -465,7 +494,8 @@ Game.appLoginEditScreen.prototype = {
 
   goback: function (e) {
     document.removeEventListener("backbutton", _this.goback, false);
-    _this.state.start("appLoginScreen", true, false);
+    // _this.state.start("appLoginScreen", true, false);
+    _this.state.start('mainScreen', true, false, "online");
   },
 
   downloadFiles: function (filename) {
@@ -608,9 +638,9 @@ Game.appLoginEditScreen.prototype = {
 };
 
 function successFunction() {
-	console.log('Immersive mode set successfully.');
+  console.log('Immersive mode set successfully.');
 }
 
 function errorFunction(error) {
-	console.error('Error setting immersive mode:', error);
+  console.error('Error setting immersive mode:', error);
 }

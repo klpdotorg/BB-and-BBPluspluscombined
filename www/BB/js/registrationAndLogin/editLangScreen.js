@@ -245,7 +245,10 @@ Game.editLangScreen.prototype = {
 		var jsondata = { name: _this.user.name, deviceid: _this.user.deviceid, grade: _this.user.grade, schooltype: _this.user.schoolType, language: target.name, organization: _this.user.organization };
 
 		if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
-			var apiurl = "https://abbmath.klp.org.in/abbchmprm/updateprofile";  
+			// var apiurl = "https://abbmath.klp.org.in/abbchmprm/updateprofile"; 
+			console.log("update profile api");
+			console.log(window.ApiConfig.url('updateprofile'), "updateprofile url");
+			var apiurl = window.ApiConfig.url('updateprofile');
 			// var apiurl = "http://localhost/abbchmprm/updateprofile";
 			$.ajax({
 				url: apiurl,
@@ -258,7 +261,7 @@ Game.editLangScreen.prototype = {
 				success: function (jsonresp) {
 					console.log(jsonresp);
 					if (jsonresp.status == "success") {
-						window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+						// window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 						console.log("UPDATE user SET language = '" + target.name + "' WHERE name LIKE %" + _this.user.name + "%");
 						bbreglogin.bbdbhandler.executeSql("UPDATE user SET language = '" + target.name + "' WHERE name LIKE '%" + _this.user.name + "%';", [], _this.localdatasuccess, _this.localdatafailed);
 						//bbreglogin.bbdbhandler.executeSql('select * from user where name like %'+_this.user.name+'%;', [], _this.localdatasuccess, _this.localdatafailed);

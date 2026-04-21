@@ -27,6 +27,8 @@ Game.registrationLangSelectionScreenbbpp.prototype = {
     splash.scale.setTo(1);
     splash.anchor.setTo(0.5);
 
+    var avatarSelected = "Fish"; // only avatar
+
     var titleBar = game.add.graphics(0, 0);
     titleBar.anchor.setTo(0.5);
     titleBar.lineStyle(2, 0x000000, 0.8);
@@ -56,7 +58,7 @@ Game.registrationLangSelectionScreenbbpp.prototype = {
           game.state.start("mainScreen", true, false, _this.app_Mode); //,lang
         }, this);
       }
- 
+
       document.addEventListener("backbutton", _this.goback, false);
 
       var titleTxt = game.add.text(game.world.centerX - 5, 45, "Building Blocks 6-8 by Akshara");
@@ -249,18 +251,35 @@ Game.registrationLangSelectionScreenbbpp.prototype = {
             Select_language: lang,
             item_id: "",
           });
-
-          game.state.start(
-            "registrationPicSelectionScreenbbpp",
-            true,
-            false,
-            lang,
-            _this.user,
-            _this.app_Mode
-          );
+          FirebasePlugin.logEvent("Selected_Avatar", {
+            Selected_Avatar: "Fish",
+            item_id: "",
+          });
+          FirebasePlugin.logEvent("Button_click_tick_register", {
+            Button_click_tick_regst: "",
+            item_id: "",
+          });
+          this.register(targets, "Fish", lang);
         }, this);
       }
     }, this);
+    //       FirebasePlugin.logEvent("Select_language", {
+    //         Select_language: lang,
+    //         item_id: "",
+    //       });
+
+    //       game.state.start(
+    //         "appLoginEditScreenbbpp",
+    //         //"registrationPicSelectionScreenbbpp",
+    //         true,
+    //         false,
+    //         lang,
+    //         _this.user,
+    //         _this.app_Mode
+    //       );
+    //     }, this);
+    //   }
+    // }, this);
 
     grp.add(this["languagegraphicsBg" + i]);
     if (i + 1 < 10) grp.add(this["sprite" + i]);
@@ -268,7 +287,216 @@ Game.registrationLangSelectionScreenbbpp.prototype = {
 
   },
 
+  register: function (target, avatarSelected, lang) {
+    target.inputEnabled = false;
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+      _this.language = lang;
+      var fcmToken = localStorage.getItem("pending_fcm_token") || localStorage.getItem("fcm_token") || "";
+      var lastLogin = new Date().toISOString();
+
+      var jsondata = { name: avatarSelected, gender: null, schooltype: "0", geo: "77.580643,12.972442", grade: "6th Grade", deviceid: id, language: _this.language, organization: "Akshara", avatarpic: avatarSelected, fcm_token: fcmToken, last_login: lastLogin, app_version_name: app.APP_VERSION_NAME };
+      // var jsondata = { name: avatarSelected, gender: null, schooltype: "0", geo: "77.580643,12.972442", grade: "1st Grade", deviceid: id, language: _this.language, organization: "Akshara", avatarpic: avatarSelected, fcm_token: fcmToken, last_login: lastLogin, app_version_name: app.APP_VERSION_NAME };
+      console.log(jsondata);
+      if (
+        navigator.connection.type != "none" &&
+        navigator.connection.type != "unknown" &&
+        navigator.connection.type != null &&
+        navigator.connection.type != "undefined"
+      ) {
+        // var apiurl = "https://abbmath.klp.org.in/abbppchmprm/register";
+        var apiurl = window.ApiConfig.url('register');
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "text",
+          // dataType: "json",
+          data: JSON.stringify(jsondata),
+          contentType: "application/json; charset=UTF-8",
+          accepts: "application/json",
+          success: function (respText) {
+            console.log(respText);
+            console.log("raw register response text:", respText);
+            // strip any prefix and parse
+            var firstBrace = respText.indexOf('{');
+            var payload = firstBrace >= 0 ? respText.substring(firstBrace) : respText;
+            try {
+              var jsonresp = JSON.parse(payload);
+            } catch (e) {
+              console.error("JSON parse failed:", e, "payload:", payload);
+              target.inputEnabled = true;
+              return;
+            }
+            console.log("register response:", jsonresp);
+            if (jsonresp.status == "success") {
+              console.log("success")
+              // window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+              target.events.onInputDown.removeAll();
+              _this.checkOnlineForData(avatarSelected);
+            }
+            else {
+              window.plugins.toast.show(jsonresp.status + "\n" + jsonresp.description, 3000, "bottom");
+              target.inputEnabled = true;
+            }
+
+          },
+          // error: function (error) {
+          error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(error);
+            console.log("register api failed");
+            console.log("url:", apiurl);
+            console.log("status:", jqXHR && jqXHR.status);
+            console.log("statusText:", jqXHR && jqXHR.statusText);
+            console.log("textStatus:", textStatus);
+            console.log("errorThrown:", errorThrown);
+            console.log("responseText:", jqXHR && jqXHR.responseText);
+            window.plugins.toast.show("Register failed: " + (jqXHR && jqXHR.status) + " " + (textStatus || ""), 3000, "bottom");
+            // window.plugins.toast.show(error, 3000, "bottom");
+            target.inputEnabled = true;
+          }
+          // success: function (jsonresp) {
+          //   console.log(jsonresp);
+          //   if (jsonresp.status == "success") {
+          //     // window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+          //     target.events.onInputDown.removeAll();
+          //     _this.checkOnlineForData(avatarSelected);
+          //   } else {
+          //     window.plugins.toast.show(
+          //       jsonresp.status + "\n" + jsonresp.description,
+          //       3000,
+          //       "bottom"
+          //     );
+          //     target.inputEnabled = true;
+          //   }
+          // },
+          // error: function (error) {
+          //   console.log(error);
+          //   window.plugins.toast.show(error, 3000, "bottom");
+          //   target.inputEnabled = true;
+          // },
+        });
+      } else {
+        window.plugins.toast.show(
+          "please check your internet connection and try again",
+          3000,
+          "bottom"
+        );
+        target.inputEnabled = true;
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+      target.inputEnabled = true;
+    });
+  },
+
+  checkOnlineForData: function (avatarName) {
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+
+      var jsondata = { name: avatarName, deviceid: id, grade: "6th Grade", app_version_name: app.APP_VERSION_NAME };
+      console.log(jsondata);
+      if (
+        navigator.connection.type != "none" &&
+        navigator.connection.type != "unknown" &&
+        navigator.connection.type != null &&
+        navigator.connection.type != "undefined"
+      ) {
+        var apiurl = window.ApiConfig.url('login');
+        // var apiurl = "https://abbmath.klp.org.in/abbppchmprm/login";
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "json",
+          data: JSON.stringify(jsondata),
+          contentType: "application/json; charset=UTF-8",
+          accepts: "application/json",
+          success: function (jsonresp) {
+            console.log(jsonresp);
+            if (jsonresp.status == "success") {
+              _this.checkOnlineForData2(avatarName, jsonresp.description);
+            }
+          },
+          error: function (error) {
+            console.log(error);
+            window.plugins.toast.show(error, 1000, "bottom");
+          },
+        });
+      } else {
+        window.plugins.toast.show(
+          "please check your internet connection and try again",
+          3000,
+          "bottom"
+        );
+        document.addEventListener("online", _this.checkNetwork, false);
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+    });
+  },
+
+  checkOnlineForData2: function (avatarName, acc_token) {
+    FirebasePlugin.getInstallationId(function (id) {
+      console.log("Got installation ID: " + id);
+
+      var jsondata = { name: avatarName, deviceid: id, grade: "6th Grade" };
+      if (
+        navigator.connection.type != "none" &&
+        navigator.connection.type != "unknown" &&
+        navigator.connection.type != null &&
+        navigator.connection.type != "undefined"
+      ) {
+        var apiurl = window.ApiConfig.url('getchild');
+        // var apiurl = "https://abbmath.klp.org.in/abbppchmprm/getchild";
+        $.ajax({
+          url: apiurl,
+          type: "POST",
+          dataType: "json",
+          data: JSON.stringify(jsondata),
+          contentType: "application/json; charset=UTF-8",
+          accepts: "application/json",
+          success: function (jsonresp) {
+            console.log(jsonresp);
+            if (jsonresp.status == "success") {
+              bbregloginbbpp.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId, grade) values (?,?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid, (jsonresp.grade || '6th Grade')], null, null);
+              jsonresp.uid = acc_token;
+              _this.state.start(
+                "adSplashScreenbbpp",
+                true,
+                false,
+                jsonresp,
+                _this.app_Mode
+              );
+            }
+          },
+          error: function (error) {
+            window.plugins.toast.show(error, 3000, "bottom");
+          },
+        });
+      } else {
+        window.plugins.toast.show(
+          "please check your internet connection and try again",
+          3000,
+          "bottom"
+        );
+      }
+    }, function (error) {
+      console.error("Failed to get installation ID", error);
+    });
+  },
+
+  checkNetwork: function () {
+    document.removeEventListener("online", _this.checkNetwork, false);
+    _this.checkOnlineForData("Fish");
+  },
+
   shutdown: function () {
     document.removeEventListener("backbutton", _this.goback, false);
   },
 };
+
+//   },
+
+//   shutdown: function () {
+//     document.removeEventListener("backbutton", _this.goback, false);
+//   },
+// };

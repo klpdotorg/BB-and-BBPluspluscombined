@@ -1212,7 +1212,7 @@ Game.preloader.prototype = {
 
         /*window.loadingFinished = true;
     	
-        game.state.add('videoSkip',Game.videoSkip);
+        //game.state.add('videoSkip',Game.videoSkip);
         _this.state.start('videoSkip',true,false);*/
 
         window.prevScreen = "practiceModegradeSelectionScreen";

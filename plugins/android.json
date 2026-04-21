@@ -76,6 +76,9 @@
     },
     "cordova-sqlite-storage": {
       "PACKAGE_NAME": "com.akshara.easymath"
+    },
+    "cordova-plugin-app-version": {
+      "PACKAGE_NAME": "com.akshara.easymath"
     }
   },
   "dependent_plugins": {

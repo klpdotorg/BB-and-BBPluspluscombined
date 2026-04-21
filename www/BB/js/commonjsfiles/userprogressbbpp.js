@@ -38,7 +38,7 @@ Game.userprogressbbpp.prototype={
 
 	create:function(game){
 
-		this.numberSystemsTotal = 79;
+		this.numberSystemsTotal = 79;//79
 		this.geometryTotal = 27;//7
 		this.algebraTotal = 25;//15
 
@@ -59,9 +59,16 @@ Game.userprogressbbpp.prototype={
 		
 		this.gameModeBg = game.add.image(0,0,'gameModeBg');
 
-		console.log(window.deviceId);
+		console.log(window.deviceId,"user progress window.deviceId");
+		console.log(window.user ,"user progress window.user");
+		console.log(window.user.grade ,"user progress window.user.grade");
 
-		var jsondata = {name:window.avatarName,deviceid:window.deviceId};
+		// var jsondata = {name:window.avatarName,deviceid:window.deviceId};
+		var jsondata = {
+			name: window.avatarName,
+			deviceid: window.deviceId,
+			grade: window.user.grade
+		};
 
 		_this = this;
 
@@ -70,9 +77,10 @@ Game.userprogressbbpp.prototype={
 		if(navigator.connection.type!="none" && navigator.connection.type!="unknown" && navigator.connection.type!=null && navigator.connection.type!="undefined")
 		{
 			console.log("sync telemetry"+navigator.connection.type);
-			var apiurl = "https://abbmath.klp.org.in/abbppchmprm/assets/userprogress/userprogress";
+			// var apiurl = "https://abbmath.klp.org.in/abbppchmprm/assets/userprogress/userprogress";
 			//var apiurl = "https://10.0.2.2/abbppchmprm/assets/userprogress/userprogress";
-			
+			var apiurl = window.ApiConfig.url('userprogress');
+
 		        console.log("RESTAPImgr_1.invokeRESTAPI_1: apiname:" + apiurl + "jsondata" + JSON.stringify(jsondata));
 		        nativeApp.CallUserProgressBeforeFEtchingData();
 
@@ -99,10 +107,16 @@ Game.userprogressbbpp.prototype={
 		            	}
 		                 
 		            },
-		            error: function (error) {
-		            	console.log(error);
-		                nativeApp.CallUserProgressFetchError();
-		            }
+					error: function (xhr, status, error) {
+						console.log("userprogress error status", status);
+						console.log("userprogress error message", error);
+						console.log("userprogress raw response", xhr && xhr.responseText);
+						nativeApp.CallUserProgressFetchError();
+					}
+		            // error: function (error) {
+		            // 	console.log(error);
+		            //     nativeApp.CallUserProgressFetchError();
+		            // }
 		            
 		        });
 		}
@@ -145,7 +159,7 @@ Game.userprogressbbpp.prototype={
 		this.avatar = this.add.sprite(100,21,'avatar');
 		this.avatar.scale.setTo(0.21);
 		this.avatar.anchor.setTo(0.5);
-
+		this.avatar.visible = false;
 	},
 
 	secondsToHms:function(d) {

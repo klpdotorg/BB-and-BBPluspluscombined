@@ -34,7 +34,7 @@ Game.userprogress.prototype = {
 
 	create: function (game) {
 
-		this.numberSenseTotal = 92;
+		this.numberSenseTotal = 92;//92
 		this.numberoperationTotal = 46;
 		this.measurementTotal = 39;
 		this.shapesTotal = 32;
@@ -97,9 +97,16 @@ Game.userprogress.prototype = {
 
 		this.gameModeBg = game.add.image(0, 0, 'gameModeBg');
 
-		console.log(window.deviceId);
+		console.log(window.deviceId,"user progress window.deviceId");
+		console.log(window.user ,"user progress window.user");
+		console.log(window.user.grade ,"user progress window.user.grade");
 
-		var jsondata = { name: window.avatarName, deviceid: window.deviceId };
+		// var jsondata = { name: window.avatarName, deviceid: window.deviceId };
+		var jsondata = {
+			name: window.avatarName,
+			deviceid: window.deviceId,
+			grade: window.user.grade
+		};
 
 		_this = this;
 
@@ -107,8 +114,11 @@ Game.userprogress.prototype = {
 
 		if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
 			console.log("sync telemetry" + navigator.connection.type);
-			var apiurl = "https://abbmath.klp.org.in/abbchmprm/assets/userprogress/userprogress";
+			// var apiurl = "https://abbmath.klp.org.in/abbchmprm/assets/userprogress/userprogress";
 			//var apiurl = "https://10.0.2.2/abbchmprm/assets/userprogress/userprogress";
+			console.log("user progress api");
+			
+			var apiurl = window.ApiConfig.url('userprogress');
 
 			console.log("RESTAPImgr.invokeRESTAPI: apiname:" + apiurl + "jsondata" + JSON.stringify(jsondata));
 			nativeApp.CallUserProgressBeforeFEtchingData();
@@ -135,8 +145,14 @@ Game.userprogress.prototype = {
 					}
 
 				},
-				error: function (error) {
-					console.log(error);
+				// error: function (error) {
+				// 	console.log(error);
+				// 	nativeApp.CallUserProgressFetchError();
+				// }
+				error: function (xhr, status, error) {
+					console.log("userprogress error status", status);
+					console.log("userprogress error message", error);
+					console.log("userprogress raw response", xhr && xhr.responseText);
 					nativeApp.CallUserProgressFetchError();
 				}
 
@@ -184,6 +200,7 @@ Game.userprogress.prototype = {
 		this.avatar = this.add.sprite(100, 21, 'avatar');
 		this.avatar.scale.setTo(0.21);
 		this.avatar.anchor.setTo(0.5);
+		this.avatar.visible = false;
 
 	},
 

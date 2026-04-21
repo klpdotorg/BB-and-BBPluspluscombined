@@ -41,7 +41,7 @@ Game.mainScreen.prototype = {
         titleTxt_start.wordWrapWidth = 500;
 
         var cloud1_5 = this.add.sprite(150, 310, 'mainCloud');//190-40,210+100
-        cloud1_5.scale.setTo(1.3,1.3);
+        cloud1_5.scale.setTo(1.3, 1.3);
         // cloud1_5.anchor.setTo(0.5);
         cloud1_5.inputEnabled = true;
         cloud1_5.input.useHandCursor = true;
@@ -61,7 +61,7 @@ Game.mainScreen.prototype = {
         cloud1_5Txt.wordWrapWidth = 500;
 
         var cloud6_8 = this.add.sprite(150, 510, 'mainCloud');//190-40,410+100
-        cloud6_8.scale.setTo(1.3,1.3);
+        cloud6_8.scale.setTo(1.3, 1.3);
         // cloud6_8.anchor.setTo(0.5);
         cloud6_8.inputEnabled = true;
         cloud6_8.input.useHandCursor = true;
@@ -79,6 +79,10 @@ Game.mainScreen.prototype = {
         cloud6_8Txt.fill = '#563814';
         cloud6_8Txt.wordWrap = true;
         cloud6_8Txt.wordWrapWidth = 500;
+
+        // hide the cloude
+        // cloud6_8.visible = false;
+        // cloud6_8Txt.visible = false;
     }
 
 }

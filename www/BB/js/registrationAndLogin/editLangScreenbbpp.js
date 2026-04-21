@@ -41,7 +41,7 @@ Game.editLangScreenbbpp.prototype = {
 
 		regBackArrow.inputEnabled = true;
 		regBackArrow.events.onInputDown.add(function () {
-			console.log(_this.user,"editLangScreenbbpp though");
+			console.log(_this.user, "editLangScreenbbpp though");
 			// game.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
 			game.state.start('adSplashScreenbbpp', true, false, _this.user, _this.app_Mode);
 		}, this);
@@ -86,7 +86,7 @@ Game.editLangScreenbbpp.prototype = {
 			lang = "मराठी"
 		if (_this.user.language == "Tamil")
 			lang = "தமிழ்"
-		
+
 		this.selectLanguageText = game.add.text(game.world.centerX - 10, game.world.centerY - 57, lang);
 		this.selectLanguageText.x = Math.round(_this.selectLanguageText.x);
 		this.selectLanguageText.anchor.setTo(0.5);
@@ -113,10 +113,10 @@ Game.editLangScreenbbpp.prototype = {
 				var languageList = ["ଭାଷା ବାଛନ୍ତୁ", "English", "हिंदी", "ಕನ್ನಡ", "ଓଡ଼ିଆ", "मराठी", "தமிழ்"];
 			if (_this.user.language == "Marathi")
 				var languageList = ["भाषा निवडा", "English", "हिंदी", "ಕನ್ನಡ", "ଓଡ଼ିଆ", "मराठी", "தமிழ்"];
-		
+
 			if (_this.user.language == "Tamil")
 				var languageList = ["மொழியை தேர்ந்தெடு", "English", "हिंदी", "ಕನ್ನಡ", "ଓଡ଼ିଆ", "मराठी", "தமிழ்"];
-	
+
 			var x = game.world.centerX - 140;
 			var y = game.world.centerY - 80;
 
@@ -130,10 +130,10 @@ Game.editLangScreenbbpp.prototype = {
 
 	goback: function (e) {
 		document.removeEventListener('backbutton', _this.goback, false);
-		console.log(_this.user,"editLangScreenbbpp though");
+		console.log(_this.user, "editLangScreenbbpp though");
 		// _this.state.start('appLoginEditScreenbbpp', true, false, _this.user, _this.app_Mode);
 		_this.state.start('adSplashScreenbbpp', true, false, _this.user, _this.app_Mode);
-		
+
 	},
 
 
@@ -209,10 +209,10 @@ Game.editLangScreenbbpp.prototype = {
 			target.name = "Odiya"
 		else if (target.name == "मराठी")
 			target.name = "Marathi"
-	
+
 		else if (target.name == "தமிழ்")
 			target.name = "Tamil"
-		
+
 		else
 			target.name = "English"
 
@@ -223,21 +223,22 @@ Game.editLangScreenbbpp.prototype = {
 		var jsondata = { name: _this.user.name, deviceid: _this.user.deviceid, grade: _this.user.grade, schooltype: _this.user.schooltype, language: target.name, organization: _this.user.organization };
 
 		if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
-			var apiurl = "https://abbmath.klp.org.in/abbppchmprm/updateprofile";
+			// var apiurl = "https://abbmath.klp.org.in/abbppchmprm/updateprofile";
+			var apiurl = window.ApiConfig.url('updateprofile');
 			//var apiurl = "https://localhost/abbppchmprm/updateprofile";   
 			//var apiurl = "https://10.0.2.2/abbppchmprm/updateprofile";      		        
-			$.ajax({ 
+			$.ajax({
 				url: apiurl,
 				type: "POST",
 				dataType: "json",
-			//	async:false, // set to false to perform a synchronous request
+				//	async:false, // set to false to perform a synchronous request
 				data: JSON.stringify(jsondata),
 				contentType: 'application/json; charset=UTF-8',
 				accepts: 'application/json',
 				success: function (jsonresp) {
 					console.log(jsonresp);
 					if (jsonresp.status == "success") {
-						window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+						// window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 						console.log("UPDATE user SET language = '" + target.name + "' WHERE name LIKE %" + _this.user.name + "%");
 						bbregloginbbpp.bbdbhandler.executeSql("UPDATE user SET language = '" + target.name + "' WHERE name LIKE '%" + _this.user.name + "%';", [], _this.localdatasuccess, _this.localdatafailed);
 						//bbreglogin.bbdbhandler.executeSql('select * from user where name like %'+_this.user.name+'%;', [], _this.localdatasuccess, _this.localdatafailed);
@@ -279,7 +280,7 @@ Game.editLangScreenbbpp.prototype = {
 		// _this.state.start('appLoginEditScreenbbpp', true, false, result.rows.item(0), _this.app_Mode);
 		_this.state.start('adSplashScreenbbpp', true, false, result.rows.item(0), _this.app_Mode);
 
-		
+
 	},
 
 

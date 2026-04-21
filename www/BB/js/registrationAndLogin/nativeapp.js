@@ -98,9 +98,21 @@ var nativeApp =
         },
 
 
-        openPlaystore:function() {
-            
-        },
+        // for force update
+        openPlaystore:function(storeUrl) {
+          var packageId = "com.akshara.easymath";
+          var marketUrl = "market://details?id=" + packageId;
+          var webUrl = storeUrl || ("https://play.google.com/store/apps/details?id=" + packageId);
+
+          try {
+              window.location.href = marketUrl;
+              setTimeout(function () {
+                  window.location.href = webUrl;
+              }, 1200);
+          } catch (e) {
+              window.location.href = webUrl;
+          }
+      },
 
         sendEmail:function() {
 

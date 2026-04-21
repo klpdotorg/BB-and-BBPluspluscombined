@@ -25,7 +25,9 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 
 	startGame: function () {
 		console.log("I am in gameModeSelectionScreenbbpp");
-		_this.avatarName = ['Fish', 'ButterFly', 'Flower', 'Parrot', 'Sun', 'Tree'];
+		// Only keep a single avatar (Fish)
+		_this.avatarName = ['Fish'];
+		// _this.avatarName = ['Fish', 'ButterFly', 'Flower', 'Parrot', 'Sun', 'Tree'];
 		_this.checkForLoginData();
 
 		_this.userArray = [];
@@ -139,33 +141,33 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		selectPicTxt.wordWrap = true;
 		selectPicTxt.wordWrapWidth = 500;
 
-		_this.pos = [[150, 300], [390, 300], [150, 500], [390, 500], [150, 700], [390, 700]];
+		// _this.pos = [[150, 300], [390, 300], [150, 500], [390, 500], [150, 700], [390, 700]];
+		_this.pos = [[game.world.centerX, 350]];
 
-
-		_this.fish = game.add.sprite(150, 300, 'fish');
-		_this.fish.scale.setTo(0.8);
+		_this.fish = game.add.image(150, 300, 'logo');
+		_this.fish.scale.setTo(0.8);//0.8
 		_this.fish.anchor.setTo(0.5);
 
 
-		_this.butterfly = game.add.sprite(390, 300, 'butterfly');
-		_this.butterfly.scale.setTo(0.8);
-		_this.butterfly.anchor.setTo(0.5);
+		// _this.butterfly = game.add.sprite(390, 300, 'butterfly');
+		// _this.butterfly.scale.setTo(0.8);
+		// _this.butterfly.anchor.setTo(0.5);
 
-		_this.flower = game.add.sprite(150, 500, 'flower');
-		_this.flower.scale.setTo(0.8);
-		_this.flower.anchor.setTo(0.5);
+		// _this.flower = game.add.sprite(150, 500, 'flower');
+		// _this.flower.scale.setTo(0.8);
+		// _this.flower.anchor.setTo(0.5);
 
-		_this.parrot = game.add.sprite(390, 500, 'parrot');
-		_this.parrot.scale.setTo(0.8);
-		_this.parrot.anchor.setTo(0.5);
+		// _this.parrot = game.add.sprite(390, 500, 'parrot');
+		// _this.parrot.scale.setTo(0.8);
+		// _this.parrot.anchor.setTo(0.5);
 
-		_this.sun = game.add.sprite(150, 700, 'sun');
-		_this.sun.scale.setTo(0.8);
-		_this.sun.anchor.setTo(0.5);
+		// _this.sun = game.add.sprite(150, 700, 'sun');
+		// _this.sun.scale.setTo(0.8);
+		// _this.sun.anchor.setTo(0.5);
 
-		_this.tree = game.add.sprite(390, 700, 'tree');
-		_this.tree.scale.setTo(0.8);
-		_this.tree.anchor.setTo(0.5);
+		// _this.tree = game.add.sprite(390, 700, 'tree');
+		// _this.tree.scale.setTo(0.8);
+		// _this.tree.anchor.setTo(0.5);
 
 
 		_this.fish.visible = false;
@@ -177,80 +179,80 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
 					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
 					return;
-				} 
-			}
-		}, this);
-
-
-		_this.butterfly.visible = false;
-		_this.butterfly.inputEnabled = false;
-		_this.butterfly.events.onInputDown.add(function () {
-			for (var i = 0; i < _this.userArray.length; i++) {
-				if (_this.userArray[i].name.toLowerCase() == "butterfly") {
-					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
-
-					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
-					return;
 				}
 			}
 		}, this);
 
-		_this.flower.visible = false;
-		_this.flower.inputEnabled = false;
-		_this.flower.events.onInputDown.add(function () {
-			for (var i = 0; i < _this.userArray.length; i++) {
-				if (_this.userArray[i].name.toLowerCase() == "flower") {
-					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
-					return;
-				}
-			}
-		}, this);
+		// _this.butterfly.visible = false;
+		// _this.butterfly.inputEnabled = false;
+		// _this.butterfly.events.onInputDown.add(function () {
+		// 	for (var i = 0; i < _this.userArray.length; i++) {
+		// 		if (_this.userArray[i].name.toLowerCase() == "butterfly") {
+		// 			FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-		_this.parrot.visible = false;
-		_this.parrot.inputEnabled = false;
-		_this.parrot.events.onInputDown.add(function () {
-			for (var i = 0; i < _this.userArray.length; i++) {
-				if (_this.userArray[i].name.toLowerCase() == "parrot") {
-					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
+		// 			// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+		// 			_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
+		// 			return;
+		// 		}
+		// 	}
+		// }, this);
 
-					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
-					return;
-				}
-			}
-		}, this);
+		// _this.flower.visible = false;
+		// _this.flower.inputEnabled = false;
+		// _this.flower.events.onInputDown.add(function () {
+		// 	for (var i = 0; i < _this.userArray.length; i++) {
+		// 		if (_this.userArray[i].name.toLowerCase() == "flower") {
+		// 			FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-		_this.sun.visible = false;
-		_this.sun.inputEnabled = false;
-		_this.sun.events.onInputDown.add(function () {
-			for (var i = 0; i < _this.userArray.length; i++) {
-				if (_this.userArray[i].name.toLowerCase() == "sun") {
-					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
+		// 			// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+		// 			_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
+		// 			return;
+		// 		}
+		// 	}
+		// }, this);
 
-					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
-					return;
-				}
-			}
-		}, this);
+		// _this.parrot.visible = false;
+		// _this.parrot.inputEnabled = false;
+		// _this.parrot.events.onInputDown.add(function () {
+		// 	for (var i = 0; i < _this.userArray.length; i++) {
+		// 		if (_this.userArray[i].name.toLowerCase() == "parrot") {
+		// 			FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
 
-		_this.tree.visible = false;
-		_this.tree.inputEnabled = false;
-		_this.tree.events.onInputDown.add(function () {
-			for (var i = 0; i < _this.userArray.length; i++) {
-				if (_this.userArray[i].name.toLowerCase() == "tree") {
-					FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
+		// 			// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+		// 			_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
+		// 			return;
+		// 		}
+		// 	}
+		// }, this);
 
-					// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
-					_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
-					return;
-				}
-			}
-		}, this);
+		// _this.sun.visible = false;
+		// _this.sun.inputEnabled = false;
+		// _this.sun.events.onInputDown.add(function () {
+		// 	for (var i = 0; i < _this.userArray.length; i++) {
+		// 		if (_this.userArray[i].name.toLowerCase() == "sun") {
+		// 			FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
+
+		// 			// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+		// 			_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
+		// 			return;
+		// 		}
+		// 	}
+		// }, this);
+
+		// _this.tree.visible = false;
+		// _this.tree.inputEnabled = false;
+		// _this.tree.events.onInputDown.add(function () {
+		// 	for (var i = 0; i < _this.userArray.length; i++) {
+		// 		if (_this.userArray[i].name.toLowerCase() == "tree") {
+		// 			FirebasePlugin.logEvent("Click_avatar", { Click_avatar_value: _this.userArray[i].name, item_id: "" });
+
+		// 			// _this.state.start('appLoginEditScreenbbpp', true, false, _this.userArray[i]);
+		// 			_this.state.start('adSplashScreenbbpp', true, false, _this.userArray[i]);
+		// 			return;
+		// 		}
+		// 	}
+		// }, this);
 
 
 
@@ -260,6 +262,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		orline1.moveTo(70, 820);//moving position of graphic if you draw mulitple lines
 		orline1.lineTo(240, 820);
 		orline1.endFill();
+		orline1.visible = false;
 
 		var orTxt = game.add.text(game.world.centerX, 820, "or");
 		orTxt.anchor.setTo(0.5);
@@ -270,6 +273,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		orTxt.fill = '#494949';
 		orTxt.wordWrap = true;
 		orTxt.wordWrapWidth = 500;
+		orTxt.visible = false;
 
 		var orline2 = game.add.graphics(0, 0);
 		//var graphics=game.add.graphics(line.start.x,line.start.y);//if you have a static line
@@ -277,10 +281,12 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		orline2.moveTo(300, 820);//moving position of graphic if you draw mulitple lines
 		orline2.lineTo(470, 820);
 		orline2.endFill();
+		orline2.visible = false;
 
 		_this.regandstsrtBtn = _this.add.sprite(game.world.centerX, 880, 'regandstsrtBtn');
 		_this.regandstsrtBtn.scale.setTo(0.9, 1);
 		_this.regandstsrtBtn.anchor.setTo(0.5);
+		_this.regandstsrtBtn.visible = false;
 
 		_this.regandstsrtBtnTxt = _this.add.text(game.world.centerX, 882, "REGISTER");
 		_this.regandstsrtBtnTxt.x = Math.round(_this.regandstsrtBtnTxt.x);
@@ -293,6 +299,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		_this.regandstsrtBtnTxt.fill = '#FFFFFF';
 		_this.regandstsrtBtnTxt.wordWrap = true;
 		_this.regandstsrtBtnTxt.wordWrapWidth = 500;
+		_this.regandstsrtBtnTxt.visible = false;
 
 
 	},
@@ -309,14 +316,22 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				console.log(result.rows.item(i));
 				_this.userArray.push(result.rows.item(i));
 
-				_this["" + result.rows.item(i).name.toLowerCase()].visible = true;
-				_this["" + result.rows.item(i).name.toLowerCase()].inputEnabled = true;
-				_this["" + result.rows.item(i).name.toLowerCase()].x = _this.pos[i][0];
-				_this["" + result.rows.item(i).name.toLowerCase()].y = _this.pos[i][1];
+				// _this["" + result.rows.item(i).name.toLowerCase()].visible = true;
+				// _this["" + result.rows.item(i).name.toLowerCase()].inputEnabled = true;
+				// _this["" + result.rows.item(i).name.toLowerCase()].x = _this.pos[i][0];
+				// _this["" + result.rows.item(i).name.toLowerCase()].y = _this.pos[i][1];
+				var avatarKey = result.rows.item(i).name.toLowerCase();
+				if (_this[avatarKey]) {
+					_this[avatarKey].visible = true;
+					_this[avatarKey].inputEnabled = true;
+					_this[avatarKey].x = _this.pos[i][0];
+					_this[avatarKey].y = _this.pos[i][1];
+				}
 
 
 			}
-			if (_this.userArray.length < 6) {
+			// if (_this.userArray.length < 6) {
+			if (_this.userArray.length < 1) {
 				_this.regandstsrtBtn.inputEnabled = true;
 				_this.regandstsrtBtn.events.onInputDown.add(function () {
 					FirebasePlugin.logEvent("Button_click_register", { Button_click: "", item_id: "" });
@@ -345,13 +360,21 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				console.log(result.rows.item(i));
 				_this.userArray.push(result.rows.item(i));
 
-				_this["" + result.rows.item(i).name.toLowerCase()].visible = true;
-				_this["" + result.rows.item(i).name.toLowerCase()].inputEnabled = true;
-				_this["" + result.rows.item(i).name.toLowerCase()].x = _this.pos[i][0];
-				_this["" + result.rows.item(i).name.toLowerCase()].y = _this.pos[i][1];
+				// _this["" + result.rows.item(i).name.toLowerCase()].visible = true;
+				// _this["" + result.rows.item(i).name.toLowerCase()].inputEnabled = true;
+				// _this["" + result.rows.item(i).name.toLowerCase()].x = _this.pos[i][0];
+				// _this["" + result.rows.item(i).name.toLowerCase()].y = _this.pos[i][1];
+				var avatarKey = result.rows.item(i).name.toLowerCase();
+				if (_this[avatarKey]) {
+					_this[avatarKey].visible = true;
+					_this[avatarKey].inputEnabled = true;
+					_this[avatarKey].x = _this.pos[i][0];
+					_this[avatarKey].y = _this.pos[i][1];
+				}
 
 			}
-			if (_this.userArray.length < 6) {
+			// if (_this.userArray.length < 6) {
+			if (_this.userArray.length < 1) {
 				_this.regandstsrtBtn.inputEnabled = true;
 				_this.regandstsrtBtn.events.onInputDown.add(function () {
 					_this.state.start('registrationLangSelectionScreenbbpp', true, false, _this.userArray);
@@ -380,7 +403,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		//var jsondata = {name:this.avatarName[0],deviceid:1234};
 
 		if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
-			var apiurl = "https://abbmath.klp.org.in/abbppchmprm/login";
+			// var apiurl = "https://abbmath.klp.org.in/abbppchmprm/login";
+			var apiurl = window.ApiConfig.url('login');
 			//var apiurl = "https://10.0.2.2/abbchmprm/login";    		        
 			$.ajax({
 				url: apiurl,
@@ -393,7 +417,7 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				success: function (jsonresp) {
 					console.log(jsonresp);
 					if (jsonresp.status == "success") {
-						window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+						// window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 						_this.checkOnlineForData2(jsonresp.description);
 
 					}
@@ -432,7 +456,8 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 		//var jsondata = {name:this.avatarName[0],deviceid:123456};
 
 		if (navigator.connection.type != "none" && navigator.connection.type != "unknown" && navigator.connection.type != null && navigator.connection.type != "undefined") {
-			var apiurl = "https://abbmath.klp.org.in/abbppchmprm/getchild";
+			// var apiurl = "https://abbmath.klp.org.in/abbppchmprm/getchild";
+			var apiurl = window.ApiConfig.url('getchild');
 			//var apiurl = "https://10.0.2.2/abbchmprm/getchild";       		        
 			$.ajax({
 				url: apiurl,
@@ -445,9 +470,9 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 				success: function (jsonresp) {
 					console.log(jsonresp);
 					if (jsonresp.status == "success") {
-						window.plugins.toast.show(jsonresp.status, 3000, "bottom");
+						// window.plugins.toast.show(jsonresp.status, 3000, "bottom");
 
-						bbregloginbbpp.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId) values (?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid], null, null);
+						bbregloginbbpp.bbdbhandler.executeSql("insert into user(uid, name, language, deviceId, grade) values (?,?,?,?,?)", [acc_token, jsonresp.name, jsonresp.language, jsonresp.deviceid, (jsonresp.grade || '6th Grade')], null, null);
 
 						_this.avatarName.shift();
 						if (_this.avatarName.length > 0)
@@ -482,4 +507,4 @@ Game.gameModeSelectionScreenbbpp.prototype = {
 			window.plugins.toast.show("please check your internet connection and try again", 3000, "bottom");
 		}
 	},
-};
+}; 

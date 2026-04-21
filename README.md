@@ -60,3 +60,38 @@ changed lines in the config.xml file
   <preference name="android-minSdkVersion" value="23" />
   <preference name="android-compileSdkVersion" value="36" />
    <preference name="android-targetSdkVersion" value="36" />
+
+## for force update
+
+Use a server-driven minimum version check at app startup.
+
+Keep using android-versionCode as the source of truth
+config.xml (line 2) currently has android-versionCode="72".
+
+Create a remote JSON (on your server), for example:
+//app-force-update.json
+{
+  "forceUpdate": true,
+  "minVersionCode": 73,
+  "storeUrl": "https://play.google.com/store/apps/details?id=com.akshara.easymath",
+  "message": "A new version is required to continue."
+}
+
+Add startup check before entering app flow
+Hook it in index.js (line 106) (inside create) before game.state.start('mainScreen'...) at index.js (line 164).
+
+Compare local build vs server minVersionCode
+
+If localVersionCode < minVersionCode: show blocking screen + “Update Now” button only.
+Button should open Play Store (market://details?id=com.akshara.easymath, fallback to storeUrl).
+Re-check on app resume too (optional but recommended).
+
+For each release
+
+Increase android-versionCode in config.xml.
+Publish build.
+Raise minVersionCode in server JSON when you want to force old users to update.
+Notes for your project:
+
+nativeApp.openPlaystore() exists as stub at nativeapp.js (line 101); you can use direct store URL from JS if native method isn’t implemented.
+adSplashScreenbb.js already fetches server config, so you can host update config similarly.

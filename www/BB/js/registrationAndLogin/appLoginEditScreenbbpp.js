@@ -24,7 +24,9 @@ Game.appLoginEditScreenbbpp.prototype = {
 		_this.user = user;
 		console.log(_this.user);
 		_this.app_Mode = app_Mode;
-		
+
+		var accessToken = this.user && this.user.uid ? this.user.uid : "";
+		window.acctkn = accessToken;
 	},
 
 	onDeviceReady: function () {
@@ -176,7 +178,36 @@ Game.appLoginEditScreenbbpp.prototype = {
 		titleTxt.wordWrap = true;
 		titleTxt.wordWrapWidth = 500;
 
-		var avatar = game.add.sprite(game.world.centerX, game.world.centerY, _this.user.name.toLowerCase());
+		var welcomeTextMap = {
+			English: "Welcome to \n Building Blocks",
+			Hindi: "बिल्डिंग ब्लॉक्स में \n आपका स्वागत है",
+			Kannada: "ಬಿಲ್ಡಿಂಗ್ ಬ್ಲಾಕ್ಸ್‌ಗೆ \n ಸ್ವಾಗತ",
+			Odiya: "ବିଲ୍ଡିଂ ବ୍ଲକ୍ସକୁ \n ସ୍ୱାଗତ",
+			Gujarati: "બિલ્ડિંગ બ્લોક્સમાં \n આપનું સ્વાગત છે",
+			Marathi: "बिल्डिंग ब्लॉक्समध्ये \n आपले स्वागत आहे",
+			Telugu: "బిల్డింగ్ బ్లాక్స్‌కు \n స్వాగతం",
+			Tamil: "பில்டிங் பிளாக்ஸ் இற்கு \n வரவேற்கிறோம்",
+			Urdu: "بلڈنگ بلاکس میں \n خوش آمدید"
+		};
+
+		var welcome = welcomeTextMap[_this.user && _this.user.language] || welcomeTextMap.English;
+
+		var selectPicTxt = game.add.text(game.world.centerX, 150, welcome);
+
+		selectPicTxt.x = Math.round(selectPicTxt.x);
+		selectPicTxt.anchor.setTo(0.5);
+		selectPicTxt.align = 'center';
+		selectPicTxt.font = 'regfont3';
+
+
+		selectPicTxt.fontSize = '26pt';
+
+		selectPicTxt.fontWeight = 0;
+		selectPicTxt.fill = '#494949';
+		selectPicTxt.wordWrap = true;
+		selectPicTxt.wordWrapWidth = 500;
+
+		var avatar = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');//_this.user.name.toLowerCase()
 		avatar.scale.setTo(0.8);
 		avatar.anchor.setTo(0.5);
 
@@ -245,7 +276,8 @@ Game.appLoginEditScreenbbpp.prototype = {
 			_this.regBackArrow.inputEnabled = true;
 			_this.regBackArrow.events.onInputDown.add(function () {
 				console.log(_this.user, "APPLOgEDitScreen Back btn !!!");
-				_this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
+				// _this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
+				_this.state.start('mainScreen', true, false, _this.app_Mode);
 			}, _this);
 
 			document.addEventListener('backbutton', _this.goback, false);
@@ -394,7 +426,8 @@ Game.appLoginEditScreenbbpp.prototype = {
 
 			_this.regBackArrow.inputEnabled = true;
 			_this.regBackArrow.events.onInputDown.add(function () {
-				_this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
+				_this.state.start('mainScreen', true, false, _this.app_Mode);
+				// _this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
 			}, _this);
 
 			document.addEventListener('backbutton', _this.goback, false);
@@ -412,7 +445,8 @@ Game.appLoginEditScreenbbpp.prototype = {
 
 	goback: function (e) {
 		document.removeEventListener('backbutton', _this.goback, false);
-		_this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
+		_this.state.start('mainScreen', true, false, _this.app_Mode);
+		// _this.state.start('appLoginScreenbbpp', true, false, _this.app_Mode, _this.user.language);
 	},
 
 	downloadFiles: function (filename) {

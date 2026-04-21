@@ -3,7 +3,7 @@ Game.gameModeSelectionScreen = function () {
 };
 
 window.mode = null;
-window.quizQuest = true;
+window.quizQuest = false;// true changed for quizQuest remove
 Game.gameModeSelectionScreen.prototype = {
 	gameModeBg: null,
 	gameModeNavBar: null,
@@ -257,19 +257,19 @@ Game.gameModeSelectionScreen.prototype = {
 		_this.storedMonth = localStorage.getItem("Month")
 		_this.storedYear = localStorage.getItem("Year")
 		if (_this.checkDate > _this.storedDate) {
-			window.quizQuest = true;
+			window.quizQuest = false;// true changed for quizQuest remove
 			localStorage.setItem("Date", _this.checkDate);
 			localStorage.setItem("Month", _this.checkMonth);
 			localStorage.setItem("Year", _this.checkYear);
 		}
 		else if (_this.checkMonth > _this.storedMonth) {
-			window.quizQuest = true;
+			window.quizQuest = false;// true changed for quizQuest remove
 			localStorage.setItem("Date", _this.checkDate);
 			localStorage.setItem("Month", _this.checkMonth);
 			localStorage.setItem("Year", _this.checkYear);
 		}
 		else if (_this.checkYear > _this.storedYear) {
-			window.quizQuest = true;
+			window.quizQuest = false;// true changed for quizQuest remove
 			localStorage.setItem("Date", _this.checkDate);
 			localStorage.setItem("Month", _this.checkMonth);
 			localStorage.setItem("Year", _this.checkYear);

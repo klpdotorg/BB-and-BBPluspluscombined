@@ -1750,7 +1750,7 @@ var TestMgr_abbchmprmdsjsapi = {
                 break;
 
             case 'CHM7':
-                var chmgamemasterdata = { id: "1", id_game: "SK101", game_description: "Game Description SK", id_grade: "1", gametoopen: "SK102", prerequisitegame: "100" };
+                var chmgamemasterdata = { id: "1", id_game: "SK101", game_description: "Game Description SK", id_grade: "6", gametoopen: "SK102", prerequisitegame: "100" };
                 abbchmprmdsjsapi.chm_saveGameMasterData(chmgamemasterdata);
                 break;
 

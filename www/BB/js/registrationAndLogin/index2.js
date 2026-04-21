@@ -507,77 +507,77 @@ Game.index2.prototype={
 				}
 				else if(measurement1 == true)
 				{
-					measurement1 == false;
+					measurement1 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(measurement2 == true)
 				{
-					measurement2 == false;
+					measurement2 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(measurement3 == true)
 				{
-					measurement3 == false;
+					measurement3 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(measurement4 == true)
 				{
-					measurement4 == false;
+					measurement4 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberOpertaion1 == true)
 				{
-					numberOpertaion1 == false;
+					numberOpertaion1 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberOpertaion2 == true)
 				{
-					numberOpertaion2 == false;
+					numberOpertaion2 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberOpertaion3 == true)
 				{
-					numberOpertaion3 == false;
+					numberOpertaion3 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberOpertaion4 == true)
 				{
-					numberOpertaion4 == false;
+					numberOpertaion4 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense1 == true)
 				{
-					numberSense1 == false;
+					numberSense1 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense2 == true)
 				{
-					numberSense2 == false;
+					numberSense2 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense3 == true)
 				{
-					numberSense3 == false;
+					numberSense3 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense4 == true)
 				{
-					numberSense4 == false;
+					numberSense4 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense5 == true)
 				{
-					numberSense5 == false;
+					numberSense5 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense6 == true)
 				{
-					numberSense6 == false;
+					numberSense6 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else if(numberSense7 == true)
 				{
-					numberSense7 == false;
+					numberSense7 = false;
 					game.state.start('gradeSelectionScreen',true,false);
 				}
 				else
