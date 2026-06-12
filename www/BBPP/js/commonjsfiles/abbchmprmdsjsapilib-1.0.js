@@ -1444,7 +1444,8 @@ var RESTAPImgr = {
 
     //abbrestapi_baseurl: "https://dev.abs.klp.org.in/abbchmprm/",
     //abbrestapi_baseurl: "https://abbmath.klp.org.in/abbchmprm/",
-    abbrestapi_baseurl: "https://abbmath.klp.org.in/abbppchmprm/",
+    // abbrestapi_baseurl: "https://abbmath.klp.org.in/abbppchmprm/",
+    abbrestapi_baseurl: "https://abbmath.klp.org.in/abbchmprmlatest/",
     //"https://abbmath.klp.org.in/abbppchmprm/",
 
     //https://abbmath.klp.org.in/abbppchmprm/Reports/

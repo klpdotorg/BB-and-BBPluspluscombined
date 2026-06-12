@@ -4,7 +4,8 @@ window.ApiConfig = (function () {
     // var BASE = 'http://10.0.2.2/abbchmprm';
     // var BASE = 'http://10.0.2.2/abbchmprmtest';
     // var BASE = 'https://abbmath.klp.org.in/abbchmprmtest';
-    var BASE = 'https://abbmath.klp.org.in/abbchmprm';
+    // var BASE = 'https://abbmath.klp.org.in/abbchmprm';
+    var BASE = 'https://abbmath.klp.org.in/abbchmprmlatest';
     var ENDPOINTS = {
         jspoint: '/',
         register: '/register',
