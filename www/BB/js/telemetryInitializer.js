@@ -464,6 +464,12 @@ var telInitializer = {
 			case "conversion":
             				gameID = "MCON1.4";
             				break;
+			case "MT5-1-Time":
+							gameID = "MT5-1-Time";
+							break;
+			case "MT5-2-Time":
+							gameID = "MT5-2-Time";
+							break;
 
 		}
 

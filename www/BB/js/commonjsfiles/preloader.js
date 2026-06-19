@@ -850,6 +850,12 @@ Game.preloader.prototype = {
         this.loadjscssfile("BB/js/gradejs/conversion/level1.js", "js");
         this.loadjscssfile("BB/js/gradejs/conversion/score.js", "js");
 
+        this.loadjscssfile("BB/js/gradejs/Time-MT5-1-G5/level1.js", "js");
+        this.loadjscssfile("BB/js/gradejs/Time-MT5-1-G5/score.js", "js");
+
+        this.loadjscssfile("BB/js/gradejs/Time-MT5-2-G5/level1.js", "js");
+        this.loadjscssfile("BB/js/gradejs/Time-MT5-2-G5/score.js", "js");
+
 
 
 
@@ -859,12 +865,16 @@ Game.preloader.prototype = {
         this.load.video('demo', './demo.mp4');
 
         _this.load.image('conversion', window.baseUrl + 'assets/conversion/conversion.png');
+        _this.load.image('Time-MT5-1-G5',  window.baseUrl + 'assets/gradeSelectionScreenAssets/Time-MT5-1-G5.png');
+        _this.load.image('Time-MT5-2-G5',  window.baseUrl + 'assets/gradeSelectionScreenAssets/Time-MT5-2-G5.png');
 
         _this.addgradeSelectionAssets();
         _this.addgrade1SelectionAssets();
         _this.addgrade2SelectionAssets();
         _this.addgrade3SelectionAssets();
         _this.addgrade4SelectionAssets();
+        _this.addTime_MT5_1_G5Assets();
+        _this.addTime_MT5_2_G5Assets();
 
         _this.loadCommonAssets();
 
@@ -1070,6 +1080,7 @@ Game.preloader.prototype = {
 
         this.loadjscssfile("BB/js/gradejs/pv3.5/level1.js", "js");
         this.loadjscssfile("BB/js/gradejs/pv3.5/score.js", "js");
+        
 
 
 
@@ -10602,6 +10613,241 @@ Game.preloader.prototype = {
         this.load.image('nsd6_5_chart', window.baseUrl + 'assets/gradeAssets/nsd6.5/10.png');
         this.load.image('nsd6_5_div', window.baseUrl + 'assets/gradeAssets/nsd6.5/div.png')
     },
+
+    addTime_MT5_1_G5Assets: function () {
+    
+                this.load.image('timebg', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/timebg.png');
+                this.load.image('navbar', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/navbar.png');
+                this.load.atlas('unity1.2AstarAnim', window.baseUrl + 'assets/commonAssets/starAnim1.png', window.baseUrl + 'json/commonJson/starAnim1.json');
+                // Grade Assets
+                this.load.image('glow2', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/glow.png');
+                this.load.atlas('allimg', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/allimg.png',window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/allimg.json');
+                this.load.atlasJSONHash("thumbsUp",window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/thumbsUp.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/thumbsUp.json');
+                this.load.atlasJSONHash("thumbsDown", window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/thumbsDown.png',window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/thumbsDown.json');
+                this.load.atlasJSONHash("AM_Sprite",window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.json');
+                this.load.atlasJSONHash("PM_Sprite",window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.json');
+                this.load.atlasJSONHash("AM_Button",window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.json');
+                this.load.atlasJSONHash("PM_Button",window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.json');
+                this.load.image('Bg', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Bg.png');
+                this.load.image('C1', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C1.png');
+                this.load.image('C2', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C2.png');
+                this.load.image('C3', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C3.png');
+                this.load.image('C4', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C4.png');
+                this.load.image('C5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C5.png');
+                this.load.image('C6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C6.png');
+                this.load.image('C7', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C7.png');
+                this.load.image('C8', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C8.png');
+                this.load.image('C9', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C9.png');
+                this.load.image('C10', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C10.png');
+                this.load.image('C11', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C11.png');
+                this.load.image('C12', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C12.png');
+                this.load.image('C13', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C13.png');
+                this.load.image('C14', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C14.png');
+                this.load.image('C15', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C15.png');
+                this.load.image('C16', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C16.png');
+                this.load.image('C17', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C17.png');
+                this.load.image('C18', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C18.png');
+                this.load.image('C19', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C19.png');
+                this.load.image('C20', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C20.png');
+                this.load.image('C21', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C21.png');
+                this.load.image('C22', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C22.png');
+                this.load.image('C5 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C5 Clock.png');
+                this.load.image('C6 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C6 Clock.png');
+                this.load.image('C7 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C7 Clock.png');
+                this.load.image('C8 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C8 Clock.png');
+                this.load.image('C9 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C9 Clock.png');
+                this.load.image('C10 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C10 Clock.png');
+                this.load.image('C11 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C11 Clock.png');
+                this.load.image('C12 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C12 Clock.png');
+                this.load.image('C13 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C13 Clock.png');
+                this.load.image('C19 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C19 Clock.png');
+                this.load.image('C20 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C20 Clock.png');
+                this.load.image('C21 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C21 Clock.png');
+                this.load.image('C22 Clock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/C22 Clock.png');
+
+                this.load.image('Background', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Baground.png');
+                this.load.image('AnalogClock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Analog clock.png');
+                this.load.atlas('AnalogClocksprite', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Analog clock 1.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Analog clock 1.json');
+
+                // this.load.image('DigitalClock', 'assets/gradeAssets/Time-MT5-1-G5/Digital clock.png');
+                this.load.atlas('TimeMT5_1_DigitalClock', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Digital clock 1.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Digital clock 1.json');
+                this.load.atlas('TimeMT5_1_rightans', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Right Answer.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Right Answer.json');
+                this.load.atlas('TimeMT5_1_wrongans', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Wrong Answer.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Wrong Answer.json');
+
+            
+                this.load.image('RedCircle', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Red Circle.png');
+                this.load.image('Box', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Box.png');
+                this.load.image('Box1', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Box1.png');
+                this.load.atlas('AM', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/am.json');
+                this.load.atlas('PM', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/pm.json');
+                this.load.atlas('TimeMT5_1_DigitalNum', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Digital sprite.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Digital sprite.json');
+                this.load.atlas('TimeMT5_1_HourHand', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/HourHand.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/HourHand.json');
+                this.load.atlas('TimeMT5_1_MinuteHand', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/MinuteHand.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/MinuteHand.json');
+                this.load.atlas('TimeMT5_1_RightClick', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/RightClick.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/RightClick.json');
+
+
+                this.load.audio('clocktick', 'sounds/clocktick.mp3');
+                this.load.audio('dragSound', 'sounds/Drag_Snap.mp3');
+                this.load.audio('chime', 'sounds/chime.mp3');
+                this.load.audio('smallReward', 'sounds/Small Reward.mp3');
+
+                //Q5-A6
+                // Question 5 - Images
+                this.load.image('BgQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Baground.png');
+                this.load.image('BoxQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Box.png');
+                this.load.image('Character1Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 1.png');
+                this.load.image('Character2Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 2.png');
+                this.load.image('Character3Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 3.png');
+                this.load.image('Character4Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 4.png');
+                this.load.image('Character5Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 5.png');
+                this.load.image('Character6Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Character 6.png');
+                this.load.image('GreenBoxQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Green box.png');
+                this.load.image('GreyBoxQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Grey box.png');
+                this.load.image('PodiumQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Podium.png');
+                this.load.image('TrackQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Track.png');
+                this.load.image('WhiteBoxQ5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Box.png');
+                this.load.image('Podium', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Podium.png');
+
+                // Question 5 - Sprites
+                this.load.atlas('Sprite1Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 1.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 1.json');
+                this.load.atlas('Sprite2Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 2.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 2.json');
+                this.load.atlas('Sprite3Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 3.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 3.json');
+                this.load.atlas('Sprite4Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 4.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 4.json');
+                this.load.atlas('Sprite5Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 5.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 5.json');
+                this.load.atlas('Sprite6Q5', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 6.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Sprite 6.json');
+
+                // Question 6 - Images
+                this.load.image('BgQ6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Baground.png');
+                this.load.image('BoxWithTrackQ6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Box with track.png');
+                this.load.image('TimingBlackBoxQ6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Timing Black box.png');
+                this.load.image('TimingGreyBoxQ6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Timing grey box.png');
+                this.load.image('Train1Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 1 Png.png');
+                this.load.image('Train2Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 2 Png.png');
+                this.load.image('Train3Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 3 Png.png');
+                this.load.image('Train4Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 4 Png.png');
+                this.load.image('WhiteBoxQ6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/White box.png');
+                // Question 6 - Sprites
+                this.load.atlas('Sprite1Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 1 sprite.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 1 sprite.json');
+                this.load.atlas('Sprite2Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 2 sprite.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 2 sprite.json');
+                this.load.atlas('Sprite3Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 3 sprite.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 3 sprite.json');
+                this.load.atlas('Sprite4Q6', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 4 sprite.png', window.baseUrl + 'assets/gradeAssets/Time-MT5-1-G5/Train 4 sprite.json');
+
+
+                this.load.audio("clocktick", "sounds/clocktick.mp3");
+                this.load.audio("dragSound", "sounds/Drag_Snap.mp3");
+                this.load.audio("chime", "sounds/chime.mp3");
+                this.load.audio("ClickSound", "sounds/ClickSound.mp3");
+                this.load.audio("celebration", "sounds/celebration.mp3");
+                this.load.audio( "counter_celebration", "sounds/counter_celebration.mp3");
+                this.load.audio("SmallReward", "sounds/Small Reward.mp3");
+                this.load.audio("smallReward", "sounds/Small Reward.mp3");
+                this.load.audio("wrongansSound", "sounds/wrongans.mp3");
+                this.load.audio("WrongCelebrationSound","sounds/WrongCelebrationSound.mp3");
+
+    },
+
+    addTime_MT5_2_G5Assets: function () {
+    
+            this.load.image('navbar', window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/navbar.png");
+            this.load.atlas('unity1.2AstarAnim', window.baseUrl + 'assets/commonAssets/starAnim1.png', window.baseUrl + 'json/commonJson/starAnim1.json');
+            this.load.image('timebg', window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/timebg.png");
+            this.load.image("Bg", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Bg.png");
+            this.load.image("C1", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C1.png");
+            this.load.image("C2", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C2.png");
+            this.load.image("C3", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C3.png");
+            this.load.image("C4", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C4.png");
+            this.load.image("C5", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C5.png");
+            this.load.image("C6", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C6.png");
+            this.load.image("C7", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C7.png");
+            this.load.image("C8", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C8.png");
+            this.load.image("C9", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C9.png");
+            this.load.image("C10", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C10.png");
+            this.load.image("C11", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C11.png");
+            this.load.image("C12", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C12.png");
+            this.load.image("C13", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C13.png");
+            this.load.image("C14", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C14.png");
+            this.load.image("C15", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C15.png");
+            this.load.image("C16", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C16.png");
+            this.load.image("C17", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C17.png");
+            this.load.image("C18", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C18.png");
+            this.load.image("C19", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C19.png");
+            this.load.image("C20", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C20.png");
+            this.load.image("C21", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C21.png");
+            this.load.image("C22", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C22.png");
+            this.load.image("C23", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/C23.png");
+            this.load.image("glow2", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/glow.png");
+
+            this.load.image("Background",  window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Bg.png");
+            this.load.image("AnalogClock", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog json.png");
+            this.load.atlasJSONArray("ClockPink", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Clock_pink.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Clock_pink.json");
+            this.load.image("DigitalClock", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock.png");
+            this.load.image("AnswerClock", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/answer.png");
+            this.load.atlasJSONArray("AnalogClock1", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog clock 1.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog clock 1.json");
+            this.load.atlasJSONArray("DigitalClock1", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 1.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 1.json");
+            this.load.atlasJSONArray("DigitalClock2", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 2.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 2.json");
+            this.load.atlasJSONArray("DigitalClock3", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 3.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital clock 3.json");
+            this.load.atlasJSONArray("PinkHeadedAnalogClock", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pink headed analog clock.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pink headed analog clock.json");
+            this.load.atlasJSONArray("RightAnswerAnim", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Right Answer.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Right Answer.json");
+            this.load.atlasJSONArray("WrongAnswerAnim", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Wrong Answer.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Wrong Answer.json");
+            this.load.atlasJSONArray("AnalogClockAnim", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog json.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog json.json");
+            this.load.atlasJSONArray("DigitalClockAnim", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital json.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital json.json");
+            this.load.image("RedCircle", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Red Circle.png");
+            this.load.image("Box", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Box.png");
+            this.load.spritesheet("AMBadge", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/am.png", 233, 126, 2);
+            this.load.spritesheet("PMBadge", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/pm.png", 232, 126, 2);
+            this.load.atlas("DigitalNum", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital sprite.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Digital sprite.json");
+            this.load.atlas("HourHand", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Hour hand.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Hour hand.json");
+            this.load.atlas("MinuteHand", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Minute hand.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Minute hand.json");
+            this.load.atlas("RightClick", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/RightClick.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/RightClick.json");
+            
+            this.load.image('Box1', window.baseUrl + 'assets/gradeAssets/Time-MT5-2-G5/Box1.png');
+            this.load.atlas('clock1', window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pink headed analog clock.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pink headed analog clock.json");
+            this.load.image("clock2", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Clock 2.png");
+            this.load.atlas("clock2sprite", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog clock 2.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Analog clock 2.json");
+            this.load.image("Location", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Location.png");
+            this.load.image("LightBlueBox", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Light blue box.png");
+            this.load.image("BlackBox", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Black box.png");
+            this.load.image("OrangeClockCircle", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Orange clock circle.png");
+            this.load.image("PinkClockCircle", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pink clock circle.png");
+            this.load.atlasJSONArray("HourTime", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Hour time.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Hour time.json");
+            this.load.atlasJSONArray("MinuteTime", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Minute time.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Minute time.json");
+
+            this.load.image("AfghanistanFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Afghanistan flag.png");
+            this.load.image("BangladeshFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Bangladesh flag.png");
+            this.load.image("BhutanFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Bhutan flag.png");
+            this.load.image("IndiaFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/India flag.png");
+            this.load.image("MaldivesFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Maldives flag.png");
+            this.load.image("MyanmarFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Myanmar flag.png");
+            this.load.image("NepalFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Nepal flag.png");
+            this.load.image("PakistanFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Pakistan flag.png");
+            this.load.image("SriLankaFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Sri Lanka flag.png");
+            this.load.image("ThailandFlag", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Thailand flag.png");
+
+            this.load.atlasJSONArray("Map1", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 1.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 1.json");
+            this.load.atlasJSONArray("Map2", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 2.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 2.json");
+            this.load.atlasJSONArray("Map3", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 3.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 3.json");
+            this.load.atlasJSONArray("Map4", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 4.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 4.json");
+            this.load.atlasJSONArray("Map5", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 5.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 5.json");
+            this.load.atlasJSONArray("Map6", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 6.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 6.json");
+            this.load.atlasJSONArray("Map7", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 7.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 7.json");
+            this.load.atlasJSONArray("Map8", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 8.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 8.json");
+            this.load.atlasJSONArray("Map9", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 9.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/Map 9.json");
+            this.load.atlasJSONArray("AM", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/am.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/am.json");
+            this.load.atlasJSONArray("PM", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/pm.png", window.baseUrl + "assets/gradeAssets/Time-MT5-2-G5/pm.json");
+
+            this.load.audio("birdChirm", "sounds/bird_chirm.mp3");
+            this.load.audio("celebration", "sounds/celebration.mp3");
+            this.load.audio("chime", "sounds/chime.mp3");
+            this.load.audio("ClickSound", "sounds/ClickSound.mp3");
+            this.load.audio("clocktick", "sounds/clocktick.mp3");
+            this.load.audio("clung", "sounds/clung.mp3");
+            this.load.audio("counter_celebration", "sounds/counter_celebration.mp3");
+            this.load.audio("dragSound", "sounds/Drag_Snap.mp3");
+            this.load.audio("framechangeSound", "sounds/Frame_change_sound.mp3");
+            this.load.audio("wrongansSound", "sounds/wrongans.mp3");
+            this.load.audio("WrongCelebrationSound", "sounds/WrongCelebrationSound.mp3");
+
+    },
     onDeviceReady: function () {
         //this.receivedEvent('deviceready');
         AndroidFullScreen.immersiveMode(successFunction, errorFunction);
@@ -11089,6 +11335,12 @@ Game.preloader.prototype = {
 
         game.state.add('conversion', Game.conversion);
         game.state.add('conversionScore', Game.conversionScore);
+
+        game.state.add('Time_MT5_1_G5level1', Game.Time_MT5_1_G5level1);
+        game.state.add('Time_MT5_1_G5Score', Game.Time_MT5_1_G5Score);
+
+        game.state.add('Time_MT5_2_G5level1', Game.Time_MT5_2_G5level1);
+        game.state.add('Time_MT5_2_G5Score', Game.Time_MT5_2_G5Score);
 
 
 

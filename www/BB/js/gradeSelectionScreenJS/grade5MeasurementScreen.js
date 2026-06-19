@@ -97,10 +97,12 @@ Game.grade5Measurement.prototype={
 		
 		//_this.grade4VolumeGroup = _this.add.group();
 		_this.grade4conversionGroup = _this.add.group();
+		_this.grade5TimeGroup = _this.add.group();
 		
 		
 		//_this.addGrade4VolumeTopic();
 		_this.addGrade4ConversionTopic();
+		_this.addGrade5TimeTopic();
 		
 
 		//_this.grade4VolumeGroup.x = 0;
@@ -108,6 +110,8 @@ Game.grade5Measurement.prototype={
 		
 		_this.grade4conversionGroup.x = 0;
 		_this.grade4conversionGroup.y = 0;
+		_this.grade5TimeGroup.x = 0;
+		_this.grade5TimeGroup.y = 260;
 		
 		
 		
@@ -135,6 +139,7 @@ Game.grade5Measurement.prototype={
 	
 		//_this.graphicsBg.addChild(_this.grade4VolumeGroup);
 		_this.graphicsBg.addChild(_this.grade4conversionGroup);
+		_this.graphicsBg.addChild(_this.grade5TimeGroup);
 		
 		
 		
@@ -1017,6 +1022,125 @@ Game.grade5Measurement.prototype={
 		_this.grade4conversionGroup.add(_this.volumes4_1AScreenTxt);
 		
 	},
+
+	addGrade5TimeTopic:function()
+	{
+		_this.timeText = "TIME";
+
+		if(window.languageSelected == "Hindi")
+			_this.timeText = "\u0938\u092e\u092f";
+		else if(window.languageSelected == "Kannada")
+			_this.timeText = "\u0cb8\u0cae\u0caf";
+		else if(window.languageSelected == "Odiya")
+			_this.timeText = "\u0b38\u0b2e\u0b5f";
+		else if(window.languageSelected == "Gujarati")
+			_this.timeText = "\u0ab8\u0aae\u0aaf";
+		else if(window.languageSelected == "Marathi")
+			_this.timeText = "\u0935\u0947\u0933";
+		else if(window.languageSelected == "Telugu")
+			_this.timeText = "\u0c38\u0c2e\u0c2f\u0c02";
+		else if(window.languageSelected == "Tamil")
+			_this.timeText = "\u0ba8\u0bc7\u0bb0\u0bae\u0bcd";
+		else if(window.languageSelected == "Urdu")
+			_this.timeText = "\u0648\u0642\u062a";
+		else
+			_this.timeText = "TIME";
+		
+		_this.timeTopicTxtBg = _this.add.graphics(100, 60);
+		_this.timeTopicTxtBg.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.timeTopicTxtBg.beginFill(0x139487, 1);
+		_this.timeTopicTxtBg.drawRoundedRect(0,0,170,100,10);
+		_this.timeTopicTxtBg.boundsPadding = 0;
+
+		_this.timeTopicTitleText = this.add.text(185, 85, ' \n '+_this.timeText+' \n ');
+		_this.timeTopicTitleText.anchor.setTo(0.5);
+		_this.timeTopicTitleText.align = 'center';
+		_this.timeTopicTitleText.font = 'gradefont';
+		_this.timeTopicTitleText.fontSize = 26;
+		_this.timeTopicTitleText.fontWeight = 'normal';
+		_this.timeTopicTitleText.fill = 'white';
+		_this.timeTopicTitleText.wordWrap = true;
+		_this.timeTopicTitleText.wordWrapWidth = 500;
+		
+		_this.timeTopicBg = _this.add.graphics(75, 100);
+		_this.timeTopicBg.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.timeTopicBg.beginFill(0x139487, 1);
+		_this.timeTopicBg.drawRoundedRect(0,0,850,150,30);
+		_this.timeTopicBg.boundsPadding = 0;
+
+		_this.timeMT5_1Screen = _this.add.sprite(100,120,'Time-MT5-1-G5');
+		_this.timeMT5_1Badge = this.add.graphics(210,175);
+		_this.timeMT5_1Badge.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.timeMT5_1Badge.beginFill(0x493A19, 1);
+		_this.timeMT5_1Badge.drawRoundedRect(0,0,30,30,10);
+		_this.timeMT5_1Badge.boundsPadding = 0;
+		_this.timeMT5_1Txt = this.add.text(225, 192, ' \n 1 \n ');
+		_this.timeMT5_1Txt.anchor.setTo(0.5);
+		_this.timeMT5_1Txt.align = 'center';
+		_this.timeMT5_1Txt.font = 'gradefont';
+		_this.timeMT5_1Txt.fontSize = 20;
+		_this.timeMT5_1Txt.fontWeight = 'normal';
+		_this.timeMT5_1Txt.fill = 'white';
+		_this.timeMT5_1Txt.wordWrap = true;
+		_this.timeMT5_1Txt.wordWrapWidth = 500;
+
+		_this.timeMT5_2Screen = _this.add.sprite(300,120,'Time-MT5-2-G5');
+		_this.timeMT5_2Badge = this.add.graphics(410,175);
+		_this.timeMT5_2Badge.lineStyle(0, 0xFFFFFF, 0.8);
+		_this.timeMT5_2Badge.beginFill(0x493A19, 1);
+		_this.timeMT5_2Badge.drawRoundedRect(0,0,30,30,10);
+		_this.timeMT5_2Badge.boundsPadding = 0;
+		_this.timeMT5_2Txt = this.add.text(425, 192, ' \n 2 \n ');
+		_this.timeMT5_2Txt.anchor.setTo(0.5);
+		_this.timeMT5_2Txt.align = 'center';
+		_this.timeMT5_2Txt.font = 'gradefont';
+		_this.timeMT5_2Txt.fontSize = 20;
+		_this.timeMT5_2Txt.fontWeight = 'normal';
+		_this.timeMT5_2Txt.fill = 'white';
+		_this.timeMT5_2Txt.wordWrap = true;
+		_this.timeMT5_2Txt.wordWrapWidth = 500;
+
+		_this.timeMT5_1Screen.inputEnabled = true;
+		_this.timeMT5_1Screen.input.useHandCursor = true;
+		_this.timeMT5_1Screen.events.onInputDown.add(function(target){
+			_this.time.events.add(300, function(){
+				if(_this.tap)
+				{
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('Time_MT5_1_G5level1',true,false);
+				}
+			},_this);
+		},_this);
+
+		_this.timeMT5_2Screen.inputEnabled = true;
+		_this.timeMT5_2Screen.input.useHandCursor = true;
+		_this.timeMT5_2Screen.events.onInputDown.add(function(target){
+			_this.time.events.add(300, function(){
+				if(_this.tap)
+				{
+					_this.time.events.removeAll();
+					target.events.onInputDown.removeAll();
+					_this.clickSound = _this.add.audio('ClickSound');
+					_this.clickSound.play();
+					_this.state.start('Time_MT5_2_G5level1',true,false);
+				}
+			},_this);
+		},_this);
+
+		_this.grade5TimeGroup.add(_this.timeTopicTxtBg);
+		_this.grade5TimeGroup.add(_this.timeTopicTitleText);
+		_this.grade5TimeGroup.add(_this.timeTopicBg);
+		_this.grade5TimeGroup.add(_this.timeMT5_1Screen);
+		_this.grade5TimeGroup.add(_this.timeMT5_1Badge);
+		_this.grade5TimeGroup.add(_this.timeMT5_1Txt);
+		_this.grade5TimeGroup.add(_this.timeMT5_2Screen);
+		_this.grade5TimeGroup.add(_this.timeMT5_2Badge);
+		_this.grade5TimeGroup.add(_this.timeMT5_2Txt);
+	},
+	
 	
 	addGrade1WeightTopic:function()
 	{
