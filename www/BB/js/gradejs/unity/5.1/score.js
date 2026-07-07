@@ -183,8 +183,19 @@ Game.unity5_1Score.prototype={
 
 		if(this.video)
 		{
+			if(this.video.touchLocked)
+			{
+				if(typeof this.game.input.removeTouchLockCallback === "function")
+				{
+					this.game.input.removeTouchLockCallback(this.video.unlock,this.video);
+				}
+				else if(this.game.input.touch && typeof this.game.input.touch.removeTouchLockCallback === "function")
+				{
+					this.game.input.touch.removeTouchLockCallback(this.video.unlock,this.video);
+				}
+				this.video.touchLocked = false;
+			}
 			this.video.destroy();
-			this.video.removeVideoElement();
 			this.video = null;
 		}
 		
